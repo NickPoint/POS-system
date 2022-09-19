@@ -4,7 +4,7 @@
 3. <team member name 3>
 
 ## Homework 1:
-<When you finish your homework, add a link pointing to the solution here (for example, a link to a page on the wiki)> 
+[Our LPM board](https://mandreamteam.atlassian.net/jira/software/projects/LPM/boards/5)
 
 ## Homework 2:
 <Links to the solution>
