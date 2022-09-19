@@ -1,7 +1,7 @@
 # Team <write your team name here>:
-1. <team member name 1>
-2. <team member name 2>
-3. <team member name 3>
+1. Mykyta Voievudskyi
+2. Artur Aleksander Kanošin
+3. Nikita Kislõi
 
 ## Homework 1:
 [Our LPM board](https://mandreamteam.atlassian.net/jira/software/projects/LPM/boards/5)
