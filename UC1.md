@@ -1,4 +1,4 @@
-###UC-1: Add a product to the warehouse
+### UC-1: Add a product to the warehouse
 
 **Primary Actor:** Warehouse manager
 
