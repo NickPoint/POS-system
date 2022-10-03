@@ -7,7 +7,13 @@
 [Our LPM board](https://mandreamteam.atlassian.net/jira/software/projects/LPM/boards/5)
 
 ## Homework 2:
-<Links to the solution>
+[Our LPM board](https://mandreamteam.atlassian.net/jira/software/projects/LPM/boards/5)
+[UC-1](https://bitbucket.org/ZmishenkoxValerijxAlbertovich/lg9-man/src/master/UC1.md)
+[UC-2](https://bitbucket.org/ZmishenkoxValerijxAlbertovich/lg9-man/src/master/UC2.md)
+[UC-3](https://bitbucket.org/ZmishenkoxValerijxAlbertovich/lg9-man/src/master/UC3.md)
+[UC-4](https://bitbucket.org/ZmishenkoxValerijxAlbertovich/lg9-man/src/master/UC4.md)
+[UC-5](https://bitbucket.org/ZmishenkoxValerijxAlbertovich/lg9-man/src/master/UC5.md)
+
 
 ## Homework 3:
 <Links to the solution>
