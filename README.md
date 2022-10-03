@@ -19,6 +19,7 @@
 
 [UC-5](https://bitbucket.org/ZmishenkoxValerijxAlbertovich/lg9-man/src/master/UC5.md)
 
+[Domain model](https://bitbucket.org/ZmishenkoxValerijxAlbertovich/lg9-man/src/master/domainModel.png)
 
 ## Homework 3:
 <Links to the solution>
