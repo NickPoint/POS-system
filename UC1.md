@@ -26,7 +26,7 @@
 
 **Flow of Events for Extensions:**
 
-* 3b. Form is filled incorrectly
+ 3b. Form is filled incorrectly:
   
   1. ← System (a) detects error and (b) notifies the actor about incorrectly filled fields 
   
