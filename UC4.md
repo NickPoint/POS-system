@@ -1,8 +1,8 @@
-### UC-4: Notify about needed restock
+### UC-4: Notify about needed restock on the CLI start-up
 
 **Primary Actor:** Warehouse manager, cashier, accountant
 
-**Actor's goal:** Receive a notification in the CLI about needed restock of sold-out and nearly sold-out products from the warehouse
+**Actor's goal:** Receive a notification on the CLI about needed restock of sold-out and nearly(<10) sold-out products from the warehouse
 
 **Participating actors:** system
 
