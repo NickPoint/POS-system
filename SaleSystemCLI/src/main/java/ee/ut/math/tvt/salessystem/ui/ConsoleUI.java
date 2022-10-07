@@ -114,6 +114,8 @@ public class ConsoleUI {
             cart.submitCurrentPurchase();
         else if (c[0].equals("r"))
             cart.cancelCurrentPurchase();
+        else if(c[0].equals("t"))
+            showTeam();
         else if (c[0].equals("a") && c.length == 3) {
             try {
                 long idx = Long.parseLong(c[1]);
