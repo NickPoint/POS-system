@@ -1,5 +1,4 @@
-This is changes
+This is
 an
-interesting
 example
 file
