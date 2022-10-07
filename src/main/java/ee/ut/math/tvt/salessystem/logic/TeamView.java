@@ -3,11 +3,7 @@ package ee.ut.math.tvt.salessystem.logic;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileVisitor;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Properties;
-import java.util.stream.Stream;
 
 public class TeamView {
     private String teamName;
@@ -16,7 +12,7 @@ public class TeamView {
     private String teamMembers;
 
     public TeamView() {
-        try (InputStream fis = new FileInputStream("./src/main/resources/application.properties")) {
+        try (InputStream fis = new FileInputStream("../src/main/resources/application.properties")) {
             Properties prop = new Properties();
             prop.load(fis);
             this.teamName = prop.getProperty("team.name");
