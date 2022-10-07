@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<TitledPane alignment="CENTER" animated="false" collapsible="false" prefHeight="400.0" prefWidth="380.0" text="Team info" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<TitledPane alignment="CENTER" animated="false" collapsible="false" prefHeight="400.0" prefWidth="380.0" text="Team info" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
    <content>
       <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="282.0" prefWidth="378.0">
         <items>
@@ -24,19 +24,19 @@
                        </rowConstraints>
                        <children>
                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Team name" />
-                           <Text fx:id="teamName" strokeType="OUTSIDE" strokeWidth="0.0" text="Team name" GridPane.columnIndex="1" />
+                           <Text fx:id="teamName" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" />
                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Team leader" GridPane.rowIndex="1" />
-                           <Text fx:id="teamLeader" strokeType="OUTSIDE" strokeWidth="0.0" text="Team name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           <Text fx:id="teamLeader" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Team leader email" GridPane.rowIndex="2" />
-                           <Text fx:id="teamLeadEmail" strokeType="OUTSIDE" strokeWidth="0.0" text="Team name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           <Text fx:id="teamLeadEmail" strokeType="OUTSIDE" strokeWidth="0.0"  GridPane.columnIndex="1" GridPane.rowIndex="2" />
                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Team members" GridPane.rowIndex="3" />
-                           <Text fx:id="teamMembers" strokeType="OUTSIDE" strokeWidth="0.0" text="Team name" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                           <Text fx:id="teamMembers" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                        </children>
                    </GridPane>
-                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="233.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@LogoUTimproved.png" />
-                     </image></ImageView>
+<!--                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="233.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">-->
+<!--                     <image>-->
+<!--                        <Image url="@LogoUTimproved.png" />-->
+<!--                     </image></ImageView>-->
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
         </items>

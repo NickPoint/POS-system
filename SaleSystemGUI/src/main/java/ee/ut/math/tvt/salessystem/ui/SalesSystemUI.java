@@ -61,9 +61,9 @@ public class SalesSystemUI extends Application {
         //historyTab.setContent(loadControls("HistoryTab.fxml", new HistoryController()));
 
         Tab teamTab = new Tab();
-        stockTab.setText("Team");
-        stockTab.setClosable(false);
-        stockTab.setContent(loadControls("TeamTab.fxml", new TeamViewController(teamView)));
+        teamTab.setText("Team");
+        teamTab.setClosable(false);
+        teamTab.setContent(loadControls("TeamTab.fxml", new TeamViewController(teamView)));
 
         Group root = new Group();
         Scene scene = new Scene(root, 600, 500, Color.WHITE);
