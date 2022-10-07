@@ -2,9 +2,11 @@ package ee.ut.math.tvt.salessystem.ui;
 
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
+import ee.ut.math.tvt.salessystem.logic.TeamView;
 import ee.ut.math.tvt.salessystem.ui.controllers.PurchaseController;
 import ee.ut.math.tvt.salessystem.ui.controllers.StockController;
 import ee.ut.math.tvt.salessystem.logic.ShoppingCart;
+import ee.ut.math.tvt.salessystem.ui.controllers.TeamViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -32,15 +34,17 @@ public class SalesSystemUI extends Application {
     private final SalesSystemDAO dao;
     private final ShoppingCart shoppingCart;
 
+    private final TeamView teamView;
+
     public SalesSystemUI() {
         dao = new InMemorySalesSystemDAO();
         shoppingCart = new ShoppingCart(dao);
+        teamView = new TeamView();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         log.info("javafx version: " + System.getProperty("javafx.runtime.version"));
-
         Tab purchaseTab = new Tab();
         purchaseTab.setText("Point-of-sale");
         purchaseTab.setClosable(false);
@@ -56,14 +60,19 @@ public class SalesSystemUI extends Application {
         historyTab.setClosable(false);
         //historyTab.setContent(loadControls("HistoryTab.fxml", new HistoryController()));
 
+        Tab teamTab = new Tab();
+        stockTab.setText("Team");
+        stockTab.setClosable(false);
+        stockTab.setContent(loadControls("TeamTab.fxml", new TeamViewController(teamView)));
+
         Group root = new Group();
         Scene scene = new Scene(root, 600, 500, Color.WHITE);
-        //scene.getStylesheets().add(getClass().getResource("DefaultTheme.css").toExternalForm());
+//        scene.getStylesheets().add(getClass().getResource("DefaultTheme.css").toExternalForm());
 
         BorderPane borderPane = new BorderPane();
         borderPane.prefHeightProperty().bind(scene.heightProperty());
         borderPane.prefWidthProperty().bind(scene.widthProperty());
-        borderPane.setCenter(new TabPane(purchaseTab, stockTab, historyTab));
+        borderPane.setCenter(new TabPane(purchaseTab, stockTab, historyTab, teamTab));
         root.getChildren().add(borderPane);
 
         primaryStage.setTitle("Sales system");

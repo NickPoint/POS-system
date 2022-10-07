@@ -15,7 +15,7 @@ public class TeamView {
     private String teamLeaderEmail;
     private String teamMembers;
 
-    public TeamView() throws IOException {
+    public TeamView() {
         try (InputStream fis = new FileInputStream("./src/main/resources/application.properties")) {
             Properties prop = new Properties();
             prop.load(fis);
