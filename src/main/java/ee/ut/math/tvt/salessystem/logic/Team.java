@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class TeamView {
+public class Team {
     private String teamName;
     private String teamLeader;
     private String teamLeaderEmail;
     private String teamMembers;
 
-    public TeamView() {
+    public Team() {
         try (InputStream fis = new FileInputStream("../src/main/resources/application.properties")) {
             Properties prop = new Properties();
             prop.load(fis);

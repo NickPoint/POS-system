@@ -2,7 +2,7 @@ package ee.ut.math.tvt.salessystem.ui;
 
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
-import ee.ut.math.tvt.salessystem.logic.TeamView;
+import ee.ut.math.tvt.salessystem.logic.Team;
 import ee.ut.math.tvt.salessystem.ui.controllers.PurchaseController;
 import ee.ut.math.tvt.salessystem.ui.controllers.StockController;
 import ee.ut.math.tvt.salessystem.logic.ShoppingCart;
@@ -34,12 +34,12 @@ public class SalesSystemUI extends Application {
     private final SalesSystemDAO dao;
     private final ShoppingCart shoppingCart;
 
-    private final TeamView teamView;
+    private final Team team;
 
     public SalesSystemUI() {
         dao = new InMemorySalesSystemDAO();
         shoppingCart = new ShoppingCart(dao);
-        teamView = new TeamView();
+        team = new Team();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class SalesSystemUI extends Application {
         Tab teamTab = new Tab();
         teamTab.setText("Team");
         teamTab.setClosable(false);
-        teamTab.setContent(loadControls("TeamTab.fxml", new TeamViewController(teamView)));
+        teamTab.setContent(loadControls("TeamTab.fxml", new TeamViewController(team)));
 
         Group root = new Group();
         Scene scene = new Scene(root, 600, 500, Color.WHITE);

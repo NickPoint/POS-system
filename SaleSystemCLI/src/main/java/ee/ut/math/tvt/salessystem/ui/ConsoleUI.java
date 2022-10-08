@@ -6,7 +6,7 @@ import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 import ee.ut.math.tvt.salessystem.logic.ShoppingCart;
-import ee.ut.math.tvt.salessystem.logic.TeamView;
+import ee.ut.math.tvt.salessystem.logic.Team;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,12 +24,12 @@ public class ConsoleUI {
 
     private final SalesSystemDAO dao;
     private final ShoppingCart cart;
-    private final TeamView teamView;
+    private final Team team;
 
     public ConsoleUI(SalesSystemDAO dao) {
         this.dao = dao;
         cart = new ShoppingCart(dao);
-        teamView = new TeamView();
+        team = new Team();
     }
 
     public static void main(String[] args) throws Exception {
@@ -79,10 +79,10 @@ public class ConsoleUI {
 
     private void showTeam() {
         System.out.println("-------------------------");
-        System.out.println("Team name   " + teamView.getTeamName());
-        System.out.println("Team leader   " + teamView.getTeamLeader());
-        System.out.println("Team leader email   " + teamView.getTeamLeaderEmail());
-        System.out.println("Team members   " + teamView.getTeamMembers());
+        System.out.println("Team name   " + team.getTeamName());
+        System.out.println("Team leader   " + team.getTeamLeader());
+        System.out.println("Team leader email   " + team.getTeamLeaderEmail());
+        System.out.println("Team members   " + team.getTeamMembers());
         System.out.println("-------------------------");
     }
 
