@@ -37,11 +37,23 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
 
     @Override
     public void saveSoldItem(SoldItem item) {
+        for (int i = 0; i < stockItemList.size(); i++) {
+            if(stockItemList.get(i).getId() == item.getId()){
+                stockItemList.get(i).setQuantity(stockItemList.get(i).getQuantity()-item.getQuantity());
+                break;
+            }
+        }
         soldItemList.add(item);
     }
 
     @Override
     public void saveStockItem(StockItem stockItem) {
+        for (int i = 0; i < stockItemList.size(); i++) {
+            if(stockItemList.get(i).getId() == stockItem.getId()){
+                stockItemList.set(i, stockItem);
+                return;
+            }
+        }
         stockItemList.add(stockItem);
     }
 

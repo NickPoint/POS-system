@@ -1,6 +1,6 @@
 package ee.ut.math.tvt.salessystem.ui.controllers;
 
-import ee.ut.math.tvt.salessystem.logic.TeamView;
+import ee.ut.math.tvt.salessystem.logic.Team;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
@@ -19,18 +19,18 @@ public class TeamViewController implements Initializable {
     @FXML
     private Text teamMembers;
 
-    private TeamView teamView;
+    private Team team;
 
-    public TeamViewController(TeamView teamView) {
-        this.teamView = teamView;
+    public TeamViewController(Team team) {
+        this.team = team;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        teamName.setText(teamView.getTeamName());
-        teamLeader.setText(teamView.getTeamLeader());
-        teamLeadEmail.setText(teamView.getTeamLeaderEmail());
-        teamMembers.setText(teamView.getTeamMembers());
+        teamName.setText(team.getTeamName());
+        teamLeader.setText(team.getTeamLeader());
+        teamLeadEmail.setText(team.getTeamLeaderEmail());
+        teamMembers.setText(team.getTeamMembers());
     }
 
 }

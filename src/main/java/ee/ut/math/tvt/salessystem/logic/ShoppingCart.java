@@ -19,9 +19,13 @@ public class ShoppingCart {
      * Add new SoldItem to table.
      */
     public void addItem(SoldItem item) {
-        // TODO In case such stockItem already exists increase the quantity of the existing stock
         // TODO verify that warehouse items' quantity remains at least zero or throw an exception
-
+        for (int i = 0; i < items.size(); i++) {
+            if(items.get(i).getId()==item.getId()){
+                items.get(i).setQuantity(items.get(i).getQuantity()+item.getQuantity());
+                return;
+            }
+        }
         items.add(item);
         //log.debug("Added " + item.getName() + " quantity of " + item.getQuantity());
     }
