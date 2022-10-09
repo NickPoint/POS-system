@@ -12,7 +12,7 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
     private final List<SoldItem> soldItemList;
 
     public InMemorySalesSystemDAO() {
-        List<StockItem> items = new ArrayList<StockItem>();
+        List<StockItem> items = new ArrayList<>();
         items.add(new StockItem(1L, "Lays chips", "Potato chips", 11.0, 5));
         items.add(new StockItem(2L, "Chupa-chups", "Sweets", 8.0, 8));
         items.add(new StockItem(3L, "Frankfurters", "Beer sauseges", 15.0, 12));
@@ -38,7 +38,7 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
     @Override
     public void saveSoldItem(SoldItem item) {
         for (int i = 0; i < stockItemList.size(); i++) {
-            if(stockItemList.get(i).getId() == item.getId()){
+            if(stockItemList.get(i).getId().equals(item.getId())){
                 stockItemList.get(i).setQuantity(stockItemList.get(i).getQuantity()-item.getQuantity());
                 break;
             }
@@ -49,7 +49,7 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
     @Override
     public void saveStockItem(StockItem stockItem) {
         for (int i = 0; i < stockItemList.size(); i++) {
-            if(stockItemList.get(i).getId() == stockItem.getId()){
+            if(stockItemList.get(i).getId().equals(stockItem.getId())){
                 stockItemList.set(i, stockItem);
                 return;
             }
