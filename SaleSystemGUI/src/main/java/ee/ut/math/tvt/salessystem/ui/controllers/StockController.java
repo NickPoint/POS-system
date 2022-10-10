@@ -25,7 +25,7 @@ public class StockController implements Initializable {
     private TableView<StockItem> warehouseTableView;
 
     @FXML
-    private TextField addItemButton;
+    private Button addItemButton;
     @FXML
     private TextField barCodeField;
     @FXML
