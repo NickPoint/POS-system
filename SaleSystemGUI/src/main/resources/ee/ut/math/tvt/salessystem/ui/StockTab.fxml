@@ -4,11 +4,11 @@
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.4" orientation="VERTICAL" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.92">
+<SplitPane dividerPositions="0.2" orientation="VERTICAL" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.92">
    <items>
-      <AnchorPane styleClass="background_style">
+      <AnchorPane prefHeight="100.0" styleClass="background_style" SplitPane.resizableWithParent="false">
          <children>
-            <GridPane styleClass="sub_background" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="60.0">
+            <GridPane prefWidth="214.0" styleClass="sub_background" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="10000.0" minWidth="10.0" prefWidth="50.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="10000.0" minWidth="10.0" prefWidth="50.0" />
