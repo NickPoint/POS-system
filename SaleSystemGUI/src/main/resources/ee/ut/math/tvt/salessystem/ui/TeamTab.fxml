@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
 
-<TitledPane alignment="CENTER" animated="false" collapsible="false" prefHeight="400.0" prefWidth="380.0" text="Team info" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
+<TitledPane alignment="CENTER" animated="false" collapsible="false" prefHeight="400.0" prefWidth="491.0" text="Team info" xmlns="http://javafx.com/javafx/8.0.92" xmlns:fx="http://javafx.com/fxml/1">
    <content>
       <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="282.0" prefWidth="378.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="184.0" prefWidth="563.0">
                <children>
-                   <GridPane prefHeight="110.0" prefWidth="250.0" AnchorPane.bottomAnchor="68.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="157.0" AnchorPane.topAnchor="0.0">
+                   <GridPane prefHeight="116.0" prefWidth="346.0" AnchorPane.bottomAnchor="68.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="0.0">
                        <columnConstraints>
-                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="240.0" minWidth="10.0" prefWidth="109.0" />
+                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="392.0" minWidth="10.0" prefWidth="161.0" />
                        </columnConstraints>
                        <rowConstraints>
                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -24,19 +29,19 @@
                        </rowConstraints>
                        <children>
                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Team name" />
-                           <Text fx:id="teamName" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" />
+                           <Text fx:id="teamName" strokeType="OUTSIDE" strokeWidth="0.0" text="Placeholder" GridPane.columnIndex="1" />
                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Team leader" GridPane.rowIndex="1" />
-                           <Text fx:id="teamLeader" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           <Text fx:id="teamLeader" strokeType="OUTSIDE" strokeWidth="0.0" text="Placeholder" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Team leader email" GridPane.rowIndex="2" />
-                           <Text fx:id="teamLeadEmail" strokeType="OUTSIDE" strokeWidth="0.0"  GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           <Text fx:id="teamLeadEmail" strokeType="OUTSIDE" strokeWidth="0.0" text="Placeholder" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Team members" GridPane.rowIndex="3" />
-                           <Text fx:id="teamMembers" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                           <Text fx:id="teamMembers" strokeType="OUTSIDE" strokeWidth="0.0" text="Placeholder" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                        </children>
                    </GridPane>
-<!--                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="233.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">-->
-<!--                     <image>-->
-<!--                        <Image url="@LogoUTimproved.png" />-->
-<!--                     </image></ImageView>-->
+                  <ImageView fitHeight="150.0" fitWidth="209.0" layoutX="426.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@LogoUTimproved.png" />
+                     </image></ImageView>
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
         </items>
