@@ -204,7 +204,7 @@
  
  .titled-pane 
 {
--fx-skin: "com.sun.javafx.scene.control.skin.TitledPaneSkin";    
+-fx-skin: "javafx.scene.control.skin.TitledPaneSkin";
 -fx-text-fill: main_text_color;
  -fx-border-color: title_color, title_color;
     -fx-border-width: 1, 1;
@@ -291,7 +291,7 @@
  
     -fx-background-color: #1d1d1d;
    
-    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    /*-fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;*/
     -fx-font-size: 11pt;
     -fx-text-fill: #d8d8d8;
 }
@@ -498,22 +498,22 @@
  *                                                                             *
  ******************************************************************************/
  
-/*.tooltip {
+.tooltip {
     -fx-background-color: white;
     -fx-background-insets: 0;
     -fx-background-radius: 0 0 0 0;
-    -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em;  4 8 4 8 
+    -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em;  /*4 8 4 8*/
     -fx-effect: dropshadow( one-pass-box , #808080 , 5, 0.0 , 0 , 0 );
     -fx-font-family: "Segoe UI Semilight", "Segoe UI Light", "Segoe UI", Helvetica, Arial, sans-serif;
     -fx-text-fill: #949494;
 }
- 
+
 .page-corner {
     -fx-padding: 4.5 4.5 4.5 4.5;
     -fx-background-color: transparent;
     -fx-shape: null;
     -fx-effect: null;
-}*/
+}
  
 /*******************************************************************************
  *                                                                             *
@@ -588,9 +588,9 @@
 }
  
 /* The following is not working. Maybe related to RT-10521*/
-.scroll-bar .thumb:pressed {
-    -fx-color: #1e1e1e;
-}
+/*.scroll-bar .thumb:pressed {*/
+/*    -fx-color: #1e1e1e;*/
+/*}*/
  
  
 .scroll-bar .track {
@@ -694,11 +694,11 @@
      
 }
  
-/*.combo-box-base:focused {
+.combo-box-base:focused {
     -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-radius: 6.4, 4, 5, 3;
     -fx-background-insets: -1.4, 0, 1, 2;
-}*/
+}
  
 .combo-box-base:disabled {
     -fx-opacity: .4;
