@@ -7,6 +7,7 @@ import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 import ee.ut.math.tvt.salessystem.logic.ShoppingCart;
 import ee.ut.math.tvt.salessystem.logic.Team;
+import ee.ut.math.tvt.salessystem.logic.Warehouse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,11 +26,13 @@ public class ConsoleUI {
     private final SalesSystemDAO dao;
     private final ShoppingCart cart;
     private final Team team;
+    private final Warehouse warehouse;
 
     public ConsoleUI(SalesSystemDAO dao) {
         this.dao = dao;
         cart = new ShoppingCart(dao);
         team = new Team();
+        warehouse = new Warehouse(dao);
     }
 
     public static void main(String[] args) throws Exception {
@@ -86,6 +89,21 @@ public class ConsoleUI {
         System.out.println("-------------------------");
     }
 
+    private void addByBarcode(String[] c) {
+        try {
+            long idx = Long.parseLong(c[1]);
+            int amount = Integer.parseInt(c[2]);
+            StockItem item = dao.findStockItem(idx);
+            if (item != null) {
+                warehouse.addByIdx(idx, amount);
+            } else {
+                System.out.println("no stock item with id " + idx);
+            }
+        } catch (SalesSystemException | NoSuchElementException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
     private void printUsage() {
         System.out.println("-------------------------");
         System.out.println("Usage:");
@@ -129,7 +147,11 @@ public class ConsoleUI {
             } catch (SalesSystemException | NoSuchElementException e) {
                 log.error(e.getMessage(), e);
             }
-        } else {
+        }
+        else if (c[0].equals("b") && c.length == 3) {
+            addByBarcode(c);
+        }
+        else {
             System.out.println("unknown command");
         }
     }
