@@ -1,8 +1,6 @@
 package ee.ut.math.tvt.salessystem.logic;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 public class Team {
