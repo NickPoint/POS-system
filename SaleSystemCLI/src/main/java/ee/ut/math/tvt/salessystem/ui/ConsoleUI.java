@@ -114,6 +114,7 @@ public class ConsoleUI {
         System.out.println("p\t\tPurchase the shopping cart");
         System.out.println("r\t\tReset the shopping cart");
         System.out.println("t\t\tPrint team info");
+        System.out.println("b IDX NR \tResupply NR of stock item with index IDX to the warehouse");
         System.out.println("-------------------------");
     }
 
