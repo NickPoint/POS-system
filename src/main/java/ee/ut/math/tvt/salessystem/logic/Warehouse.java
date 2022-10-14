@@ -1,17 +1,26 @@
 package ee.ut.math.tvt.salessystem.logic;
 
+import ee.ut.math.tvt.salessystem.ProductValidationException;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 public class Warehouse {
     private final SalesSystemDAO dao;
+
+    //Determines when a product is considered nearly sold-out
+    private final int SOLD_OUT_MEASURE = 7;
 
     public Warehouse(SalesSystemDAO dao) {
         this.dao = dao;
     }
 
 
-    //Deal with exception in CLI and GUI controller
+    /**
+     * Resupply existing <code>StockItem</code> by index
+     */
     public void addByIdx(long idx, int quantity) throws ProductValidationException {
         if (quantity < 0) {
             throw new ProductValidationException("The quantity of the item cannot be negative!");
@@ -22,9 +31,10 @@ public class Warehouse {
     }
 
     /**
-     * Add new StockItem to the Warehouse .
+     * Add new <code>StockItem</code> to the warehouse .
      */
     public void addNewItem(StockItem item) throws ProductValidationException {
+        //log.debug("Adding a product "+item);
         if (item.getQuantity() < 0) {
             throw new ProductValidationException("The quantity of the item cannot be negative!");
         }
@@ -32,21 +42,32 @@ public class Warehouse {
             throw new ProductValidationException("The price of the item cannot be negative!");
         }
         StockItem stockItem = dao.findStockItem(item.getId());
+        //TODO probably separate
         if (stockItem != null) {
             if (!stockItem.getName().equals(item.getName()) ||
-                    stockItem.getPrice() != item.getPrice() ||
-                    !stockItem.getDescription().equals(item.getDescription())) {
+                    stockItem.getPrice() != item.getPrice()
+//                    || !stockItem.getDescription().equals(item.getDescription())
+            ) {
                 throw new ProductValidationException("Product with given ID already exists in the system, yet other fields do not match!");
-            }else {
-                stockItem.setQuantity(stockItem.getQuantity()+item.getQuantity());
-                dao.saveStockItem(stockItem);
             }
+            stockItem.setQuantity(stockItem.getQuantity() + item.getQuantity());
+            dao.saveStockItem(stockItem);
         } else {
             dao.saveStockItem(item);
         }
+        //log.info("Added product "+item);
     }
 
-
-    //query sold-outs
-    //Track sold-outs
+    //TODO onWindowTransition event?
+    public List<StockItem> getSoldOuts() {
+        return dao
+                .findStockItems()
+                .stream()
+                .filter(i -> i.getQuantity() < SOLD_OUT_MEASURE)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
 }
+
+
+
+
