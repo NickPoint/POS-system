@@ -9,6 +9,8 @@ import ee.ut.math.tvt.salessystem.ui.controllers.StockController;
 import ee.ut.math.tvt.salessystem.logic.ShoppingCart;
 import ee.ut.math.tvt.salessystem.ui.controllers.TeamViewController;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -46,7 +48,7 @@ public class SalesSystemUI extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        log.info("javafx version: " + System.getProperty("javafx.runtime.version"));
+        log.info("javaFX version: " + System.getProperty("javafx.runtime.version"));
         Tab purchaseTab = new Tab();
         purchaseTab.setText("Point-of-sale");
         purchaseTab.setClosable(false);
@@ -55,7 +57,8 @@ public class SalesSystemUI extends Application {
         Tab stockTab = new Tab();
         stockTab.setText("Warehouse");
         stockTab.setClosable(false);
-        stockTab.setContent(loadControls("StockTab.fxml", new StockController(dao, warehouse)));
+        StockController stockController = new StockController(dao, warehouse);
+        stockTab.setContent(loadControls("StockTab.fxml", stockController));
 
         Tab historyTab = new Tab();
         historyTab.setText("History");
@@ -74,9 +77,18 @@ public class SalesSystemUI extends Application {
         BorderPane borderPane = new BorderPane();
         borderPane.prefHeightProperty().bind(scene.heightProperty());
         borderPane.prefWidthProperty().bind(scene.widthProperty());
-        borderPane.setCenter(new TabPane(purchaseTab, stockTab, historyTab, teamTab));
-        root.getChildren().add(borderPane);
+        TabPane tabPane = new TabPane(purchaseTab, stockTab, historyTab, teamTab);
+        borderPane.setCenter(tabPane);
+        ((TabPane) borderPane.getCenter())
+                .getSelectionModel()
+                .selectedIndexProperty()
+                .addListener(((observable, oldValue, newValue) -> {
+                    if (newValue.equals(1)){
+                      stockController.onTabOpen();
+                    }
+                }));
 
+        root.getChildren().add(borderPane);
         primaryStage.setTitle("Sales system");
         primaryStage.setScene(scene);
         primaryStage.show();

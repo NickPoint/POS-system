@@ -1,6 +1,5 @@
 package ee.ut.math.tvt.salessystem.ui.controllers;
 
-import ee.ut.math.tvt.salessystem.ProductValidationException;
 import ee.ut.math.tvt.salessystem.SalesSystemException;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
@@ -8,14 +7,12 @@ import ee.ut.math.tvt.salessystem.logic.Warehouse;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 //Todo check sold-out
@@ -28,6 +25,7 @@ public class StockController implements Initializable {
     private final Warehouse warehouse;
     //Holds information whether form was filled by barcode
     private boolean isFilledByBarcode = false;
+    private boolean soldOutIsShown = true;
 
     @FXML
     private Button addItem;
@@ -51,20 +49,21 @@ public class StockController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println(this);
         warehouseTableView.setItems(FXCollections.observableList(dao.findStockItems()));
         barCodeField.focusedProperty().addListener(($0, $1, newPropertyValue) -> {
             if (!newPropertyValue) {
                 isFilledByBarcode = fillInputsBySelectedStockItem();
             }
         });
-        //TODO try same for name suggestions
     }
 
     /**
-     * Event handler for the <code>add Product<code/> event
+     * Event handler for the {@code add Product} event
      */
     @FXML
     public void addProductButtonClicked() {
+        //Probably distinguish between CLI and GUI
         log.info("Adding a product");
         try {
             log.debug("Contents of warehouse " + dao.findStockItems());
@@ -74,28 +73,57 @@ public class StockController implements Initializable {
                 warehouse.addByIdx(idx, amount);
             } else {
                 String name = nameField.getText();
-                if (name.isBlank()) {
-                    throw new ProductValidationException("Product name cannot be blank!");
-                }
-                int price = Integer.parseInt(priceField.getText());
+                double price = Double.parseDouble(priceField.getText());
                 warehouse.addNewItem(new StockItem(idx, name, "", price, amount));
             }
             emptyForm();
-        } catch (NumberFormatException | SalesSystemException e) {
+        } catch (SalesSystemException | NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             log.error(e.getMessage(), e);
-            alert.setHeaderText(e.getMessage());
+            if (e instanceof NumberFormatException) {
+                alert.setHeaderText("Your numeric input is wrongly formatted!");
+            } else {
+                alert.setHeaderText(e.getMessage());
+            }
             alert.showAndWait();
         }
     }
 
     /**
-     * Event handler for the <code>refresh</code> event
+     * Event handler for the {@code refresh} event
      */
     @FXML
     public void refreshButtonClicked() {
         warehouseTableView.refresh();
+    }
+
+    /**
+     * Method that is invoked from {@link ee.ut.math.tvt.salessystem.ui.SalesSystemUI SalesSystemUI}
+     * Used to show pop-up about sold-out items
+     */
+    public void onTabOpen() {
+        if (soldOutIsShown) {
+            List<StockItem> soldOuts = warehouse.getSoldOuts();
+            if (soldOuts.size() > 0) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.getButtonTypes().add(new ButtonType("Do not show this message again", ButtonBar.ButtonData.NO));
+                alert.setHeaderText("Some products are sold-out or soon will be!");
+                alert.setTitle("Attention!");
+                alert.setContentText(
+                        String.join(
+                                "\n",
+                                soldOuts
+                                        .stream()
+                                        .map(so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity()))
+                                        .toArray(String[]::new)
+                ));
+                alert.showAndWait();
+                if (alert.getResult().getButtonData() == ButtonBar.ButtonData.NO) {
+                    soldOutIsShown = false;
+                }
+            }
+        }
     }
 
     private boolean fillInputsBySelectedStockItem() {

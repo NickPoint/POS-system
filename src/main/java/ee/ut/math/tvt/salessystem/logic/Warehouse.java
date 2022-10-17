@@ -7,6 +7,8 @@ import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class Warehouse {
     private final SalesSystemDAO dao;
 
@@ -41,6 +43,9 @@ public class Warehouse {
         if (item.getPrice() < 0) {
             throw new ProductValidationException("The price of the item cannot be negative!");
         }
+        if (item.getName().isBlank()) {
+            throw new ProductValidationException("Product name cannot be blank!");
+        }
         StockItem stockItem = dao.findStockItem(item.getId());
         //TODO probably separate
         if (stockItem != null) {
@@ -58,7 +63,7 @@ public class Warehouse {
         //log.info("Added product "+item);
     }
 
-    //TODO onWindowTransition event?
+    //TODO Return Stream instead of List and change processing accordingly
     public List<StockItem> getSoldOuts() {
         return dao
                 .findStockItems()
