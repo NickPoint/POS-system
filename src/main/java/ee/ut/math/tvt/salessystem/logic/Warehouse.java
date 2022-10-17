@@ -64,12 +64,11 @@ public class Warehouse {
     }
 
     //TODO Return Stream instead of List and change processing accordingly
-    public List<StockItem> getSoldOuts() {
+    public Stream<StockItem> getSoldOuts() {
         return dao
                 .findStockItems()
                 .stream()
-                .filter(i -> i.getQuantity() < SOLD_OUT_MEASURE)
-                .collect(Collectors.toCollection(ArrayList::new));
+                .filter(i -> i.getQuantity() < SOLD_OUT_MEASURE);
     }
 }
 
