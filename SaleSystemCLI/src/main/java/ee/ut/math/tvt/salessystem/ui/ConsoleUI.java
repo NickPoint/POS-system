@@ -107,6 +107,13 @@ public class ConsoleUI {
         }
     }
 
+    private void showSoldOutItems() {
+        List<StockItem> soldOutItems = warehouse.getSoldOuts();
+        for (int i = 0; i < soldOutItems.size(); i++) {
+            soldOutItems.get(i);
+        }
+    }
+
     private void resupplyNewItem(String[] info) {
         try {
             long idx = Long.parseLong(info[1]);
@@ -127,6 +134,8 @@ public class ConsoleUI {
 
     private void printUsage() {
         System.out.println("-------------------------");
+        System.out.println("Sold out items are:");
+        showSoldOutItems();
         System.out.println("Usage:");
         System.out.println("h\t\tShow this help");
         System.out.println("w\t\tShow warehouse contents");
