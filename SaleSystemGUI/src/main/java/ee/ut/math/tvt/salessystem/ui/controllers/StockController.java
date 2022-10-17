@@ -108,10 +108,11 @@ public class StockController implements Initializable {
             Stream<StockItem> soldOuts = warehouse.getSoldOuts();
             String message = String.join(
                     "\n",
-                    soldOuts
-                            .map(so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity()))
-                            .toArray(String[]::new));
-            if(!message.isBlank()) {
+                    soldOuts.map(
+                                    so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity())
+                            ).toArray(String[]::new)
+            );
+            if (!message.isBlank()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.getButtonTypes().add(new ButtonType("Do not show this message again", ButtonBar.ButtonData.NO));
                 alert.setHeaderText("Some products are sold-out or soon will be!");
