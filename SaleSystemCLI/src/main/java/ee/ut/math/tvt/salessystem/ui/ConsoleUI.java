@@ -14,8 +14,11 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * A simple CLI (limited functionality).
@@ -104,8 +107,35 @@ public class ConsoleUI {
         }
     }
 
+    private void showSoldOutItems() {
+        List<StockItem> soldOutItems = warehouse.getSoldOuts();
+        for (int i = 0; i < soldOutItems.size(); i++) {
+            soldOutItems.get(i);
+        }
+    }
+
+    private void resupplyNewItem(String[] info) {
+        try {
+            long idx = Long.parseLong(info[1]);
+            String name = info[2];
+            double price = Double.parseDouble(info[3]);
+            int amount = Integer.parseInt(info[4]);
+            StockItem newItem = new StockItem(idx, name, "", price, amount);
+            warehouse.addNewItem(newItem);
+        } catch (NumberFormatException | SalesSystemException e) {
+            log.error(e.getMessage(), e);
+            if (e instanceof NumberFormatException) {
+                System.out.println("Your numeric input is wrongly formatted!");
+            } else {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
     private void printUsage() {
         System.out.println("-------------------------");
+        System.out.println("Sold out items are:");
+        showSoldOutItems();
         System.out.println("Usage:");
         System.out.println("h\t\tShow this help");
         System.out.println("w\t\tShow warehouse contents");
@@ -115,6 +145,8 @@ public class ConsoleUI {
         System.out.println("r\t\tReset the shopping cart");
         System.out.println("t\t\tPrint team info");
         System.out.println("b IDX NR \tResupply NR of stock item with index IDX to the warehouse");
+        System.out.println("n IDX NAME PRICE NR\tAdd an amount (NR) of a new product with index IDX, name (NAME) and price (PRICE) to the warehouse");
+        System.out.println("                   \tTo add product with name consisting of more than one word, enclose it in ''");
         System.out.println("-------------------------");
     }
 
@@ -133,7 +165,7 @@ public class ConsoleUI {
             cart.submitCurrentPurchase();
         else if (c[0].equals("r"))
             cart.cancelCurrentPurchase();
-        else if(c[0].equals("t"))
+        else if (c[0].equals("t"))
             showTeam();
         else if (c[0].equals("a") && c.length == 3) {
             try {
@@ -148,11 +180,45 @@ public class ConsoleUI {
             } catch (SalesSystemException | NoSuchElementException e) {
                 log.error(e.getMessage(), e);
             }
-        }
-        else if (c[0].equals("b") && c.length == 3) {
+        } else if (c[0].equals("b") && c.length == 3) {
             addByBarcode(c);
-        }
-        else {
+        } else if (c[0].equals("n") && c.length >= 5) {
+            if (c.length == 5) {
+                resupplyNewItem(c);
+            } else {
+                String[] tokens = command.split("'");
+                if (tokens.length == 3) {
+                    String[] nc = Stream.concat(
+                            Stream.concat(
+                                    Arrays.stream(tokens[0].split(" ")),
+                                    Stream.of(tokens[1])
+                            ),
+                            Arrays.stream(tokens[2].split(" "))
+                                    .filter(Predicate.not(String::isBlank))
+                    ).toArray(String[]::new);
+                    resupplyNewItem(nc);
+                //Low-level fallback option
+//                if (c[2].charAt(0) == '\'' && c[c.length - 3].endsWith("'")) {
+//                    String[] nc = new String[5];
+//                    nc[0] = c[0];
+//                    nc[1] = c[1];
+//                    nc[3] = c[c.length - 2];
+//                    nc[4] = c[c.length - 1];
+//                    StringBuilder sb = new StringBuilder(c[2]);
+//                    sb.deleteCharAt(0);
+//                    for (int i = 3; i < c.length - 2; i++) {
+//                        sb.append(' ');
+//                        sb.append(c[i]);
+//                    }
+//                    sb.deleteCharAt(sb.length() - 1);
+//                    nc[2] = sb.toString();
+//                    System.out.println(Arrays.toString(nc));
+                    /** Function call (nc)*/
+                } else {
+                    System.out.println("unknown command");
+                }
+            }
+        } else {
             System.out.println("unknown command");
         }
     }
