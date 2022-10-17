@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Stream;
 
 //Todo check sold-out
 //TODO Clean-up
@@ -104,20 +105,18 @@ public class StockController implements Initializable {
      */
     public void onTabOpen() {
         if (soldOutIsShown) {
-            List<StockItem> soldOuts = warehouse.getSoldOuts();
-            if (soldOuts.size() > 0) {
+            Stream<StockItem> soldOuts = warehouse.getSoldOuts();
+            String message = String.join(
+                    "\n",
+                    soldOuts
+                            .map(so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity()))
+                            .toArray(String[]::new));
+            if(!message.isBlank()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.getButtonTypes().add(new ButtonType("Do not show this message again", ButtonBar.ButtonData.NO));
                 alert.setHeaderText("Some products are sold-out or soon will be!");
                 alert.setTitle("Attention!");
-                alert.setContentText(
-                        String.join(
-                                "\n",
-                                soldOuts
-                                        .stream()
-                                        .map(so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity()))
-                                        .toArray(String[]::new)
-                ));
+                alert.setContentText(message);
                 alert.showAndWait();
                 if (alert.getResult().getButtonData() == ButtonBar.ButtonData.NO) {
                     soldOutIsShown = false;
