@@ -10,17 +10,17 @@ repositories {
 version = '1.0'
 
 dependencies {
-    compile project(':')
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.6.2'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.6.2'
+    implementation project(':')
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.6.2'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.6.2'
 }
 
 jar {
 	doFirst {
         manifest {
-            if (!configurations.runtime.isEmpty()) {
+            if (!configurations.compileClasspath.isEmpty()) {
                 attributes('Class-Path': 
-                                configurations.runtime.collect{it.toURI().toString()}.join(' '))
+                                configurations.compileClasspath.collect{it.toURI().toString()}.join(' '))
             }
         }
     }

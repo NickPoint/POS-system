@@ -52,7 +52,6 @@ public class ConsoleUI {
         System.out.println("=       Sales System      =");
         System.out.println("===========================");
         printUsage();
-        showSoldOutItems();
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             System.out.print("> ");
@@ -109,15 +108,12 @@ public class ConsoleUI {
     }
 
     private void showSoldOutItems() {
-        Stream<StockItem> soldOuts = warehouse.getSoldOuts();
-        String message = String.join(
-                "\n",
-                soldOuts
-                        .map(so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity()))
-                        .toArray(String[]::new));
-        if(!message.isBlank()) {
+        List<StockItem> soldOutItems = warehouse.getSoldOuts();
+        if(soldOutItems.size() > 0){
             System.out.println("Sold out items are:");
-            System.out.println(message);
+        }
+        for (int i = 0; i < soldOutItems.size(); i++) {
+            soldOutItems.get(i);
         }
     }
 
@@ -141,6 +137,7 @@ public class ConsoleUI {
 
     private void printUsage() {
         System.out.println("-------------------------");
+        showSoldOutItems();
         System.out.println("Usage:");
         System.out.println("h\t\tShow this help");
         System.out.println("w\t\tShow warehouse contents");
@@ -162,10 +159,8 @@ public class ConsoleUI {
             printUsage();
         else if (c[0].equals("q"))
             System.exit(0);
-        else if (c[0].equals("w")) {
+        else if (c[0].equals("w"))
             showStock();
-            showSoldOutItems();
-        }
         else if (c[0].equals("c"))
             showCart();
         else if (c[0].equals("p"))
