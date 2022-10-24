@@ -3,10 +3,15 @@ package ee.ut.math.tvt.salessystem.logic;
 import ee.ut.math.tvt.salessystem.ProductValidationException;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.stream.Stream;
 
 public class Warehouse {
     private final SalesSystemDAO dao;
+
+    private static final Logger log = LogManager.getLogger(Warehouse.class);
 
     //Determines when a product is considered nearly sold-out
     private final int SOLD_OUT_MEASURE = 7;
@@ -17,7 +22,7 @@ public class Warehouse {
 
 
     /**
-     * Resupply existing <code>StockItem</code> by index
+     * Resupply existing {@code StockItem} by index
      */
     public void addByIdx(long idx, int quantity) throws ProductValidationException {
         try {

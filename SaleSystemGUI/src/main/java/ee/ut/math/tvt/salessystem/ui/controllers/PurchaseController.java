@@ -72,7 +72,7 @@ public class PurchaseController implements Initializable {
         });
     }
 
-    /** Event handler for the <code>new purchase</code> event. */
+    /** Event handler for the {@code new purchase} event. */
     @FXML
     protected void newPurchaseButtonClicked() {
         log.info("New sale process started");
@@ -84,7 +84,7 @@ public class PurchaseController implements Initializable {
     }
 
     /**
-     * Event handler for the <code>cancel purchase</code> event.
+     * Event handler for the {@code cancel purchase} event.
      */
     @FXML
     protected void cancelPurchaseButtonClicked() {
@@ -99,7 +99,7 @@ public class PurchaseController implements Initializable {
     }
 
     /**
-     * Event handler for the <code>submit purchase</code> event.
+     * Event handler for the {@code submit purchase} event.
      */
     @FXML
     protected void submitPurchaseButtonClicked() {
