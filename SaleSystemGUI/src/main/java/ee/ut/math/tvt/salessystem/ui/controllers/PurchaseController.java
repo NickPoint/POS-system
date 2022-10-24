@@ -159,6 +159,7 @@ public class PurchaseController implements Initializable {
     @FXML
     public void addItemEventHandler() {
         // add chosen item to the shopping cart.
+        //print cart content
         StockItem stockItem = getStockItemByBarcode();
         if (stockItem != null) {
             int quantity;
