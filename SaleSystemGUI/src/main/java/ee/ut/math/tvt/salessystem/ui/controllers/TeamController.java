@@ -4,11 +4,13 @@ import ee.ut.math.tvt.salessystem.logic.Team;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TeamViewController implements Initializable {
+public class TeamController implements Initializable {
 
     @FXML
     private Text teamName;
@@ -21,12 +23,15 @@ public class TeamViewController implements Initializable {
 
     private Team team;
 
-    public TeamViewController(Team team) {
+    private final Logger log = LogManager.getLogger(TeamController.class);
+
+    public TeamController(Team team) {
         this.team = team;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        log.info("Setting team view fields:");
         teamName.setText(team.getTeamName());
         teamLeader.setText(team.getTeamLeader());
         teamLeadEmail.setText(team.getTeamLeaderEmail());

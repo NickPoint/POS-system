@@ -19,13 +19,14 @@ public class ShoppingCart {
     }
 
     /**
-     * Add new SoldItem to table.
+     * Add new {@code SoldItem} to table.
      */
     public void addItem(SoldItem item) {
         // TODO verify that warehouse items' quantity remains at least zero or throw an exception
         for (int i = 0; i < items.size(); i++) {
             if(items.get(i).getId()==item.getId()){
                 items.get(i).setQuantity(items.get(i).getQuantity()+item.getQuantity());
+                log.debug("Updated stock of item" +item.getName()+"in the cart, new quantity: "+item.getQuantity());
                 return;
             }
         }
@@ -42,18 +43,13 @@ public class ShoppingCart {
     }
 
     public void submitCurrentPurchase() {
-        // TODO decrease quantities of the warehouse stock
-
-        // note the use of transactions. InMemorySalesSystemDAO ignores transactions
-        // but when you start using hibernate in lab5, then it will become relevant.
-        // what is a transaction? https://stackoverflow.com/q/974596
         dao.beginTransaction();
         try {
-            for (SoldItem item : items) {
-                dao.saveSoldItem(item);
-            }
+            //TODO: Should we use low-level for i approach or high level declarative approach is preferred
+            items.forEach(dao::saveSoldItem);
             dao.commitTransaction();
             items.clear();
+            log.info("Purchase is saved");
         } catch (Exception e) {
             dao.rollbackTransaction();
             throw e;
