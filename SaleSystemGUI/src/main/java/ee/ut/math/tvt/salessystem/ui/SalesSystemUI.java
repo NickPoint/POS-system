@@ -51,22 +51,26 @@ public class SalesSystemUI extends Application {
         purchaseTab.setText("Point-of-sale");
         purchaseTab.setClosable(false);
         purchaseTab.setContent(loadControls("PurchaseTab.fxml", new PurchaseController(dao, shoppingCart)));
+        log.info("Purchase Tab is loaded");
 
         Tab stockTab = new Tab();
         stockTab.setText("Warehouse");
         stockTab.setClosable(false);
         StockController stockController = new StockController(dao, warehouse);
         stockTab.setContent(loadControls("StockTab.fxml", stockController));
+        log.info("Stock Tab is loaded");
 
         Tab historyTab = new Tab();
         historyTab.setText("History");
         historyTab.setClosable(false);
+        log.info("History Tab is loaded");
         //historyTab.setContent(loadControls("HistoryTab.fxml", new HistoryController()));
 
         Tab teamTab = new Tab();
         teamTab.setText("Team");
         teamTab.setClosable(false);
         teamTab.setContent(loadControls("TeamTab.fxml", new TeamController(team)));
+        log.info("Team Tab is loaded");
 
         Group root = new Group();
         Scene scene = new Scene(root, 600, 500, Color.WHITE);
@@ -96,9 +100,9 @@ public class SalesSystemUI extends Application {
 
     private Node loadControls(String fxml, Initializable controller) throws IOException {
         URL resource = getClass().getResource(fxml);
-        if (resource == null)
+        if (resource == null) {
             throw new IllegalArgumentException(fxml + " not found");
-
+        }
         FXMLLoader fxmlLoader = new FXMLLoader(resource);
         fxmlLoader.setController(controller);
         return fxmlLoader.load();
