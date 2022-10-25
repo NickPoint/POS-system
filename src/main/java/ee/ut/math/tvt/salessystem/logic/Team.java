@@ -25,7 +25,8 @@ public class Team {
             this.teamName = prop.getProperty("team.name");
             this.teamLeader = prop.getProperty("team.leader");
             this.teamLeaderEmail = prop.getProperty("team.leader.email");
-            this.teamMembers = prop.getProperty("team.members");
+            this.teamMembers = String.join("\n",
+                    prop.getProperty("team.members").split("\\|"));
             log.debug("Loaded info: "+this);
         } catch (IOException e) {
             log.error("Exception was thrown while reading the file", e);
