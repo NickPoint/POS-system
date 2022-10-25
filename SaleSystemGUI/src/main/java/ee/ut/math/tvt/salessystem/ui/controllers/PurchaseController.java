@@ -161,6 +161,8 @@ public class PurchaseController implements Initializable {
         // add chosen item to the shopping cart.
         //print cart content
         StockItem stockItem = getStockItemByBarcode();
+        log.info("Adding item to the cart");
+        log.debug("Item: stockItem");
         if (stockItem != null) {
             int quantity;
             try {

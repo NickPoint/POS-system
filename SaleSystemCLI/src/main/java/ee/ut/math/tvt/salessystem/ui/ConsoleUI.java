@@ -39,6 +39,7 @@ public class ConsoleUI {
     }
 
     public static void main(String[] args) throws Exception {
+        log.info("Starting up the sales system CLI");
         SalesSystemDAO dao = new InMemorySalesSystemDAO();
         ConsoleUI console = new ConsoleUI(dao);
         console.run();
@@ -94,7 +95,9 @@ public class ConsoleUI {
     }
 
     private void addByBarcode(String[] c) {
+        log.info("Received tokens for adding item by barcode");
         try {
+            log.debug("Received following tokens: " + Arrays.toString(c));
             long idx = Long.parseLong(c[1]);
             int amount = Integer.parseInt(c[2]);
             StockItem item = dao.findStockItem(idx);
@@ -122,7 +125,9 @@ public class ConsoleUI {
     }
 
     private void resupplyNewItem(String[] info) {
+        log.info("Received info for item to resupply");
         try {
+            log.debug("Received following tokens: " + Arrays.toString(info));
             long idx = Long.parseLong(info[1]);
             String name = info[2];
             double price = Double.parseDouble(info[3]);
@@ -156,8 +161,9 @@ public class ConsoleUI {
     }
 
     private void processCommand(String command) {
+        log.info("User output received");
         String[] c = command.split(" ");
-
+        log.debug("Received tokens from user: " + Arrays.toString(c));
         if (c[0].equals("h"))
             printUsage();
         else if (c[0].equals("q"))
@@ -175,6 +181,7 @@ public class ConsoleUI {
         else if (c[0].equals("t"))
             showTeam();
         else if (c[0].equals("a") && c.length == 3) {
+            log.info("Adding NR of stock item with index IDX to the cart");
             try {
                 long idx = Long.parseLong(c[1]);
                 int amount = Integer.parseInt(c[2]);
@@ -194,6 +201,7 @@ public class ConsoleUI {
                 resupplyNewItem(c);
             } else {
                 String[] tokens = command.split("'");
+                log.debug("Received following tokens: " + Arrays.toString(tokens));
                 if (tokens.length == 3) {
                     String[] nc = Stream.concat(
                             Stream.concat(
@@ -203,7 +211,9 @@ public class ConsoleUI {
                             Arrays.stream(tokens[2].split(" "))
                                     .filter(Predicate.not(String::isBlank))
                     ).toArray(String[]::new);
+                    log.debug("Received following tokens: " + Arrays.toString(nc));
                     resupplyNewItem(nc);
+                    // TODO: Ask
                 //Low-level fallback option
 //                if (c[2].charAt(0) == '\'' && c[c.length - 3].endsWith("'")) {
 //                    String[] nc = new String[5];
@@ -220,7 +230,6 @@ public class ConsoleUI {
 //                    sb.deleteCharAt(sb.length() - 1);
 //                    nc[2] = sb.toString();
 //                    System.out.println(Arrays.toString(nc));
-                    /** Function call (nc)*/
                 } else {
                     System.out.println("unknown command");
                 }

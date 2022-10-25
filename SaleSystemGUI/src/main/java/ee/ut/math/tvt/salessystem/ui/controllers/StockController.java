@@ -51,7 +51,6 @@ public class StockController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println(this);
         warehouseTableView.setItems(FXCollections.observableList(dao.findStockItems()));
         barCodeField.focusedProperty().addListener(($0, $1, newPropertyValue) -> {
             if (!newPropertyValue) {
