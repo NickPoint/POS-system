@@ -44,6 +44,14 @@ public class History {
         return getWithPredicate(purchase -> isBetween.test(purchase.getDate()));
     }
 
+    /**
+     *
+     * @return
+     */
+    public List<Purchase> getLastYear(){
+        LocalDate aYearAgo = LocalDate.now().minusYears(1L);
+        return getWithPredicate(purchase -> purchase.getDate().isAfter(aYearAgo));
+    }
 
     /**
      *
