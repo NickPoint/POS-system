@@ -87,6 +87,7 @@ public class StockController implements Initializable {
             log.info("Product is added to the warehouse");
             log.debug("Contents of warehouse " + dao.findStockItems());
         } catch (SalesSystemException | NumberFormatException e) {
+            //TODO candidate for extraction and refactoring
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             log.error(e.getMessage(), e);
