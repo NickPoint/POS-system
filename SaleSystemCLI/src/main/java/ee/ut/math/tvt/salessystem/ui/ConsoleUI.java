@@ -132,7 +132,9 @@ public class ConsoleUI {
             String name = info[2];
             double price = Double.parseDouble(info[3]);
             int amount = Integer.parseInt(info[4]);
-            StockItem newItem = new StockItem(idx, name, "", price, amount);
+            StockItem newItem = new StockItem(idx, name,
+//                    "",
+                    price, amount);
             warehouse.addNewItem(newItem);
         } catch (NumberFormatException | SalesSystemException e) {
             log.error(e.getMessage(), e);

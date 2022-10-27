@@ -79,7 +79,9 @@ public class StockController implements Initializable {
                 log.debug("Form was filled automatically");
                 String name = nameField.getText();
                 double price = Double.parseDouble(priceField.getText());
-                warehouse.addNewItem(new StockItem(idx, name, "", price, amount));
+                warehouse.addNewItem(new StockItem(idx, name,
+//                        "",
+                        price, amount));
             }
             emptyForm();
             log.info("Product is added to the warehouse");
