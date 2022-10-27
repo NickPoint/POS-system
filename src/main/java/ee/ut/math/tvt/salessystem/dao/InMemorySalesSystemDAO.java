@@ -1,8 +1,11 @@
 package ee.ut.math.tvt.salessystem.dao;
 
+import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +13,7 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
 
     private final List<StockItem> stockItemList;
     private final List<SoldItem> soldItemList;
+    private final List<Purchase> purchaseList;
 
     public InMemorySalesSystemDAO() {
         List<StockItem> items = new ArrayList<>();
@@ -27,6 +31,7 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
                 0.0, 100));
         this.stockItemList = items;
         this.soldItemList = new ArrayList<>();
+        this.purchaseList = new ArrayList<>();
     }
 
     @Override
@@ -54,6 +59,11 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
         soldItemList.add(item);
     }
 
+    public void finalisePurchase(){
+        purchaseList.add(new Purchase(soldItemList, LocalTime.now(), LocalDate.now()));
+        soldItemList.clear();
+    }
+
     @Override
     public void saveStockItem(StockItem stockItem) {
         for (int i = 0; i < stockItemList.size(); i++) {
@@ -66,11 +76,17 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
     }
 
     @Override
+    public List<Purchase> getPurchases() {
+        return purchaseList;
+    }
+
+    @Override
     public void beginTransaction() {
     }
 
     @Override
     public void rollbackTransaction() {
+        soldItemList.clear();
     }
 
     @Override
