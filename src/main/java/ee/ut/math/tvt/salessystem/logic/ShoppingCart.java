@@ -73,6 +73,7 @@ public class ShoppingCart {
         dao.beginTransaction();
         try {
             items.forEach(dao::saveSoldItem);
+            dao.finalisePurchase();
             dao.commitTransaction();
             items.clear();
             log.info("Purchase is saved");

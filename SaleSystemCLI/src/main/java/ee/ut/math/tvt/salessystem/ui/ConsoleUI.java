@@ -5,6 +5,7 @@ import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
+import ee.ut.math.tvt.salessystem.logic.History;
 import ee.ut.math.tvt.salessystem.logic.ShoppingCart;
 import ee.ut.math.tvt.salessystem.logic.Team;
 import ee.ut.math.tvt.salessystem.logic.Warehouse;
@@ -28,14 +29,16 @@ public class ConsoleUI {
 
     private final SalesSystemDAO dao;
     private final ShoppingCart cart;
-    private final Team team;
     private final Warehouse warehouse;
+    private final History history;
+    private final Team team;
 
     public ConsoleUI(SalesSystemDAO dao) {
         this.dao = dao;
-        cart = new ShoppingCart(dao);
-        team = new Team();
-        warehouse = new Warehouse(dao);
+        this.cart = new ShoppingCart(dao);
+        this.warehouse = new Warehouse(dao);
+        this.history = new History(dao);
+        this.team = new Team();
     }
 
     public static void main(String[] args) throws Exception {
