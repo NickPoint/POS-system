@@ -205,7 +205,7 @@ public class PurchaseController implements Initializable {
      */
     private void resetProductField() {
         barCodeField.setText("");
-        quantityField.setText("1");
+        quantityField.setText("");
         nameField.setText("");
         priceField.setText("");
     }

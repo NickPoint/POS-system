@@ -113,6 +113,9 @@ public class StockController implements Initializable {
      * Used to show pop-up about sold-out items
      */
     public void onTabOpen() {
+        //Somewhat unrelated functionality,
+        //yet quite handy to put it here for a slightly better UX
+        warehouseTableView.refresh();
         if (soldOutIsShown) {
             log.info("Pulling sold-outs");
             log.debug("Warehouse state: "+dao.findStockItems());
