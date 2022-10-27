@@ -30,6 +30,19 @@ public class History {
         return purchases.subList(purchases.size()  - 10, purchases.size());
     }
 
+    /**
+     *
+     * @param start
+     * @param end
+     * @return
+     */
+    public List<Purchase> getBetweenDates(LocalDate start, LocalDate end){
+        if(start.isAfter(end)){
+            throw new SalesSystemException("Start date is Before the end date!");
+        }
+        Predicate<LocalDate> isBetween = date -> date.isAfter(start) && date.isBefore(end);
+        return getWithPredicate(purchase -> isBetween.test(purchase.getDate()));
+    }
 
 
     /**
