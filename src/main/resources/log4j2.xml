@@ -12,5 +12,7 @@
 
 <!--    <logger name="Ratpack" level="info">-->
 <!--    </logger>-->
+<!--    <logger name="Ratpack" level="debug">-->
+<!--    </logger>-->
   </Loggers>
 </Configuration>

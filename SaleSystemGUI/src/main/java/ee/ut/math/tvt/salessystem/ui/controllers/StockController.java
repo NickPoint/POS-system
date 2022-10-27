@@ -12,12 +12,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Stream;
-
-//Todo check sold-out
-//TODO Clean-up
+/**
+ * Encapsulates everything that has to do with the warehouse tab (the tab
+ * labelled "Warehouse" in the menu). Consists of the current item dialog and warehouse table.
+ */
 public class StockController implements Initializable {
 
     private static final Logger log = LogManager.getLogger(StockController.class);
@@ -26,6 +26,7 @@ public class StockController implements Initializable {
     private final Warehouse warehouse;
     //Holds information whether form was filled by barcode
     private boolean isFilledByBarcode = false;
+    //Holds information whether to show information window about sol-outs
     private boolean soldOutIsShown = true;
 
     @FXML
@@ -50,7 +51,6 @@ public class StockController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println(this);
         warehouseTableView.setItems(FXCollections.observableList(dao.findStockItems()));
         barCodeField.focusedProperty().addListener(($0, $1, newPropertyValue) -> {
             if (!newPropertyValue) {
@@ -64,20 +64,28 @@ public class StockController implements Initializable {
      */
     @FXML
     public void addProductButtonClicked() {
-        //Probably distinguish between CLI and GUI
-        log.info("Adding a product");
+        log.info("Adding a product: ");
+        log.debug("Contents of warehouse " + dao.findStockItems());
+        log.debug(String.format("Form content: barcode: %s, name: %s, amount: %s, price: %s",
+                barCodeField.getText(), nameField.getText(),
+                quantityField.getText(), priceField.getText()));
         try {
-            log.debug("Contents of warehouse " + dao.findStockItems());
             Long idx = Long.parseLong(barCodeField.getText());
             int amount = Integer.parseInt(quantityField.getText());
             if (isFilledByBarcode) {
+                log.debug("Form was autofilled");
                 warehouse.addByIdx(idx, amount);
             } else {
+                log.debug("Form was filled automatically");
                 String name = nameField.getText();
                 double price = Double.parseDouble(priceField.getText());
-                warehouse.addNewItem(new StockItem(idx, name, "", price, amount));
+                warehouse.addNewItem(new StockItem(idx, name,
+//                        "",
+                        price, amount));
             }
             emptyForm();
+            log.info("Product is added to the warehouse");
+            log.debug("Contents of warehouse " + dao.findStockItems());
         } catch (SalesSystemException | NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -105,13 +113,16 @@ public class StockController implements Initializable {
      */
     public void onTabOpen() {
         if (soldOutIsShown) {
+            log.info("Pulling sold-outs");
+            log.debug("Warehouse state: "+dao.findStockItems());
             Stream<StockItem> soldOuts = warehouse.getSoldOuts();
             String message = String.join(
                     "\n",
                     soldOuts.map(
-                                    so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity())
-                            ).toArray(String[]::new)
+                            so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity())
+                    ).toArray(String[]::new)
             );
+            log.debug("Following sold-outs were detected " + soldOuts);
             if (!message.isBlank()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.getButtonTypes().add(new ButtonType("Do not show this message again", ButtonBar.ButtonData.NO));
@@ -126,19 +137,27 @@ public class StockController implements Initializable {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     private boolean fillInputsBySelectedStockItem() {
         StockItem stockItem = getStockItemByBarcode();
         if (stockItem != null) {
             nameField.setText(stockItem.getName());
             priceField.setText(String.valueOf(stockItem.getPrice()));
-            return true; //Return true if item was successfully found by id
+            //Return true if item was successfully found by id
+            return true;
         }
         return false;
     }
 
     /**
-     * Search the warehouse for a <code>StockItem<code/> with the bar code entered
-     * to the <code>barCode</code> textfield.
+     * Search the warehouse for a {@code StockItem} with the bar code entered
+     * to the {@code barCode} textfield.
+     *
+     * @return {@code StockItem} instance with the given barcode,
+     * if there is no such object in DAO, {@code null} is returned instead
      */
     private StockItem getStockItemByBarcode() {
         try {

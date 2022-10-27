@@ -7,28 +7,30 @@ public class StockItem {
 
     private Long id;
     private String name;
+//    private String description;
     private double price;
-    private String description;
     private int quantity;
 
     public StockItem() {
-    }
 
-    public StockItem(Long id, String name, String desc, double price, int quantity) {
+    }
+    public StockItem(Long id, String name,
+//                     String description,
+                     double price, int quantity) {
         this.id = id;
         this.name = name;
-        this.description = desc;
+//        this.description = description;
         this.price = price;
         this.quantity = quantity;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+//    public String getDescription() {
+//        return description;
+//    }
+//
+//    public void setDescription(String description) {
+//        this.description = description;
+//    }
 
     public String getName() {
         return name;
