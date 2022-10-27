@@ -93,6 +93,16 @@ public class Warehouse {
         }
     }
 
+    /**
+     *  CLI -> if product with given id is not in stock notify the user
+     * @param id id of stockItem to be deleted
+     */
+    //TODO: Should we use it for the sake of separation of business logic, right here it seems pointless
+    public boolean deleteFromStock(Long id){
+        return dao.deleteItem(id);
+    }
+
+
     public Stream<StockItem> getSoldOuts() {
         return dao
                 .findStockItems()

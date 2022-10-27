@@ -41,4 +41,6 @@ public interface SalesSystemDAO {
     void rollbackTransaction();
 
     void commitTransaction();
+
+    boolean deleteItem(Long id);
 }

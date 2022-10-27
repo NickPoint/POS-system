@@ -29,6 +29,8 @@ public class StockController implements Initializable {
     //Holds information whether to show information window about sol-outs
     private boolean soldOutIsShown = true;
 
+    private Long selectedItemId = -1L;
+
     @FXML
     private Button addItem;
     @FXML
@@ -44,6 +46,9 @@ public class StockController implements Initializable {
     @FXML
     private TextField priceField;
 
+    @FXML
+    private Button deleteItem;
+
     public StockController(SalesSystemDAO dao, Warehouse warehouse) {
         this.dao = dao;
         this.warehouse = warehouse;
@@ -52,9 +57,22 @@ public class StockController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         warehouseTableView.setItems(FXCollections.observableList(dao.findStockItems()));
+        deleteItem.setDisable(true);
+        deleteItem.setVisible(false);
         barCodeField.focusedProperty().addListener(($0, $1, newPropertyValue) -> {
             if (!newPropertyValue) {
                 isFilledByBarcode = fillInputsBySelectedStockItem();
+            }
+        });
+        warehouseTableView.getSelectionModel().selectedItemProperty().addListener(($0, $1, selected) -> {
+            if (selected != null) {
+                selectedItemId = selected.getId();
+                deleteItem.setVisible(true);
+                deleteItem.setDisable(false);
+            } else{
+                //TODO: Migrate to function
+                deleteItem.setVisible(false);
+                deleteItem.setDisable(true);
             }
         });
     }
@@ -140,6 +158,19 @@ public class StockController implements Initializable {
             }
         }
     }
+
+    @FXML
+    public void deleteItemButtonClicked(){
+        log.info("Deleting product from warehouse");
+        log.debug("Product id: " + selectedItemId);
+        if (dao.deleteItem(selectedItemId)){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Item was successfully deleted from the warehouse!");
+            alert.setTitle("Success!");
+            alert.showAndWait();
+        }
+    }
+
 
     /**
      *
