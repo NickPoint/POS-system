@@ -104,7 +104,7 @@ public class ConsoleUI {
                 System.out.println("no stock item with id " + idx);
             }
         } catch (SalesSystemException | NoSuchElementException e) {
-            log.error(e.getMessage(), e);
+            log.error(e.getMessage());
         }
     }
 
@@ -132,7 +132,7 @@ public class ConsoleUI {
                     price, amount);
             warehouse.addNewItem(newItem);
         } catch (NumberFormatException | SalesSystemException e) {
-            log.error(e.getMessage(), e);
+            log.error(e.getMessage());
             if (e instanceof NumberFormatException) {
                 System.out.println("Your numeric input is wrongly formatted!");
             } else {
@@ -187,7 +187,7 @@ public class ConsoleUI {
                     System.out.println("no stock item with id " + idx);
                 }
             } catch (SalesSystemException | NoSuchElementException e) {
-                log.error(e.getMessage(), e);
+                log.error(e.getMessage());
             }
         } else if (c[0].equals("b") && c.length == 3) {
             addByBarcode(c);
