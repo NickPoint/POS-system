@@ -35,7 +35,7 @@ public class TeamController implements Initializable {
         teamName.setText(team.getTeamName());
         teamLeader.setText(team.getTeamLeader());
         teamLeadEmail.setText(team.getTeamLeaderEmail());
-        teamMembers.setText(team.getTeamMembers());
+        teamMembers.setText(String.join("\n", team.getTeamMembers()));
     }
 
 }

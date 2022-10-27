@@ -89,7 +89,7 @@ public class ConsoleUI {
         System.out.println("Team name   " + team.getTeamName());
         System.out.println("Team leader   " + team.getTeamLeader());
         System.out.println("Team leader email   " + team.getTeamLeaderEmail());
-        System.out.println("Team members   " + team.getTeamMembers());
+        System.out.println("Team members   " + String.join(" ", team.getTeamMembers()));
         System.out.println("-------------------------");
     }
 

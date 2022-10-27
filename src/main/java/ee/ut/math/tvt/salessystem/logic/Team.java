@@ -10,7 +10,7 @@ public class Team {
     private String teamName;
     private String teamLeader;
     private String teamLeaderEmail;
-    private String teamMembers;
+    private String[] teamMembers;
     private Logger log = LogManager.getLogger(Team.class);
 
 
@@ -25,8 +25,7 @@ public class Team {
             this.teamName = prop.getProperty("team.name");
             this.teamLeader = prop.getProperty("team.leader");
             this.teamLeaderEmail = prop.getProperty("team.leader.email");
-            this.teamMembers = String.join("\n",
-                    prop.getProperty("team.members").split("\\|"));
+            this.teamMembers = prop.getProperty("team.members").split("\\|");
             log.debug("Loaded info: "+this);
         } catch (IOException e) {
             log.error("Exception was thrown while reading the file", e);
@@ -45,14 +44,14 @@ public class Team {
         return teamLeaderEmail;
     }
 
-    public String getTeamMembers() {
+    public String[] getTeamMembers() {
         return teamMembers;
     }
 
     @Override
     public String toString() {
         return String.format("teamName: %s, teamLeader: %s, teamLeaderEmail: %s, teamMembers: %s",
-                teamName, teamLeader, teamLeaderEmail, teamMembers
+                teamName, teamLeader, teamLeaderEmail, String.join(" ",teamMembers)
         );
     }
 }
