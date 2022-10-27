@@ -50,6 +50,7 @@ public class ShoppingCart {
             log.debug("Added " + item.getName() + " quantity of " + item.getQuantity());
         } catch (SalesSystemException e){
            log.error(e.getMessage());
+            throw e;
         }
     }
 

@@ -10,6 +10,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -72,7 +73,9 @@ public class PurchaseController implements Initializable {
         });
     }
 
-    /** Event handler for the {@code new purchase} event. */
+    /**
+     * Event handler for the {@code new purchase} event.
+     */
     @FXML
     protected void newPurchaseButtonClicked() {
         log.info("New sale process started");
@@ -142,8 +145,10 @@ public class PurchaseController implements Initializable {
         }
     }
 
-    // Search the warehouse for a StockItem with the bar code entered
-    // to the barCode textfield.
+    /**
+     * Search the warehouse for a StockItem with the bar code entered
+     * to the barCode textfield.
+     */
     private StockItem getStockItemByBarcode() {
         try {
             long code = Long.parseLong(barCodeField.getText());
@@ -167,11 +172,20 @@ public class PurchaseController implements Initializable {
             int quantity;
             try {
                 quantity = Integer.parseInt(quantityField.getText());
-            } catch (NumberFormatException e) {
-                quantity = 1;
+                shoppingCart.addItem(new SoldItem(stockItem, quantity));
+                purchaseTableView.refresh();
+            } catch (NumberFormatException | SalesSystemException e) {
+                //TODO candidate for extraction and refactoring
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                log.error(e.getMessage(), e);
+                if (e instanceof NumberFormatException) {
+                    alert.setHeaderText("Your numeric input is wrongly formatted!");
+                } else {
+                    alert.setHeaderText(e.getMessage());
+                }
+                alert.showAndWait();
             }
-            shoppingCart.addItem(new SoldItem(stockItem, quantity));
-            purchaseTableView.refresh();
         }
     }
 
