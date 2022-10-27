@@ -54,6 +54,12 @@ public class ShoppingCart {
         }
     }
 
+    public String deleteFromShoppingCart(Long id){
+        return items.removeIf(product -> product.getId().equals(id)) ?
+                ("Successfully deleted an item with barcode " + id) :
+                ("The item with barcode "+id+" is not in the cart!" );
+    }
+
     public List<SoldItem> getAll() {
         //TODO: Defensive copying???
         return items;

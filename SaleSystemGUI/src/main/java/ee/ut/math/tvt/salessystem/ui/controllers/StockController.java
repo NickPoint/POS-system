@@ -174,7 +174,7 @@ public class StockController implements Initializable {
      */
     private void emptyForm() {
         barCodeField.setText("");
-        quantityField.setText("1");
+        quantityField.setText("");
         nameField.setText("");
         priceField.setText("");
     }
