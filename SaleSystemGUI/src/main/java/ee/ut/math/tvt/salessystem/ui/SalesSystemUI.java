@@ -5,6 +5,7 @@ import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.logic.ShoppingCart;
 import ee.ut.math.tvt.salessystem.logic.Team;
 import ee.ut.math.tvt.salessystem.logic.Warehouse;
+import ee.ut.math.tvt.salessystem.ui.controllers.HistoryController;
 import ee.ut.math.tvt.salessystem.ui.controllers.PurchaseController;
 import ee.ut.math.tvt.salessystem.ui.controllers.StockController;
 import ee.ut.math.tvt.salessystem.ui.controllers.TeamController;
@@ -64,7 +65,7 @@ public class SalesSystemUI extends Application {
         historyTab.setText("History");
         historyTab.setClosable(false);
         log.info("History Tab is loaded");
-        //historyTab.setContent(loadControls("HistoryTab.fxml", new HistoryController()));
+        historyTab.setContent(loadControls("HistoryTab.fxml", new HistoryController()));
 
         Tab teamTab = new Tab();
         teamTab.setText("Team");
