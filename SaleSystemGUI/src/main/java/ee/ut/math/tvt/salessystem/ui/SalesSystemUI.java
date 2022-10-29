@@ -2,6 +2,7 @@ package ee.ut.math.tvt.salessystem.ui;
 
 import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
+import ee.ut.math.tvt.salessystem.logic.History;
 import ee.ut.math.tvt.salessystem.logic.ShoppingCart;
 import ee.ut.math.tvt.salessystem.logic.Team;
 import ee.ut.math.tvt.salessystem.logic.Warehouse;
@@ -36,13 +37,15 @@ public class SalesSystemUI extends Application {
     private final SalesSystemDAO dao;
     private final ShoppingCart shoppingCart;
     private final Warehouse warehouse;
+    private final History history;
     private final Team team;
 
     public SalesSystemUI() {
         dao = new InMemorySalesSystemDAO();
         shoppingCart = new ShoppingCart(dao);
-        team = new Team();
         warehouse = new Warehouse(dao);
+        history = new History(dao);
+        team = new Team();
     }
 
     @Override
@@ -64,8 +67,8 @@ public class SalesSystemUI extends Application {
         Tab historyTab = new Tab();
         historyTab.setText("History");
         historyTab.setClosable(false);
+        historyTab.setContent(loadControls("HistoryTab.fxml", new HistoryController(history)));
         log.info("History Tab is loaded");
-        historyTab.setContent(loadControls("HistoryTab.fxml", new HistoryController()));
 
         Tab teamTab = new Tab();
         teamTab.setText("Team");

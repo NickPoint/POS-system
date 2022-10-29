@@ -22,8 +22,7 @@ public class History {
     }
 
     /**
-     *
-     * @return
+     * @return List of the last 10 purchases made
      */
     public List<Purchase> getLastTenPurchases(){
         List<Purchase> purchases = dao.getPurchases();
@@ -31,10 +30,10 @@ public class History {
     }
 
     /**
-     *
-     * @param start
-     * @param end
-     * @return
+     * @param start date after which we
+     * @param end date before which
+     * @throws SalesSystemException exception is thrown if end date comes before start date
+     * @return list of purchases between two given dates
      */
     public List<Purchase> getBetweenDates(LocalDate start, LocalDate end){
         if(start.isAfter(end)){
@@ -45,8 +44,7 @@ public class History {
     }
 
     /**
-     *
-     * @return
+     * @return list of purchases up to one year old
      */
     public List<Purchase> getLastYear(){
         LocalDate aYearAgo = LocalDate.now().minusYears(1L);
@@ -54,9 +52,8 @@ public class History {
     }
 
     /**
-     *
-     * @param p
-     * @return
+     * @param p predicate based on which Purchases are filtered
+     * @return list of products matching the predicate
      */
     private List<Purchase> getWithPredicate(Predicate<Purchase> p){
         return dao.getPurchases()
