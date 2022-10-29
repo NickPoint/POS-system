@@ -4,13 +4,13 @@ import ee.ut.math.tvt.salessystem.SalesSystemException;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 import ee.ut.math.tvt.salessystem.logic.Warehouse;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.PopupWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,6 +38,8 @@ public class StockController implements Initializable {
     private Long selectedItemId = -1L;
 
     @FXML
+    private AnchorPane anchorPane;
+    @FXML
     private Button addItem;
     @FXML
     private TableView<StockItem> warehouseTableView;
@@ -63,7 +65,7 @@ public class StockController implements Initializable {
     private Button saveNewItemStateButton;
 
     @FXML
-    private AnchorPane ap;
+    private TableColumn<StockItem, String> itemPrice;
 
     public StockController(SalesSystemDAO dao, Warehouse warehouse) {
         this.dao = dao;
@@ -73,12 +75,12 @@ public class StockController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         warehouseTableView.setItems(FXCollections.observableList(dao.findStockItems()));
+        itemPrice.setCellValueFactory(p-> new ReadOnlyObjectWrapper(String.format("%.2f", p.getValue().getPrice())));
         setButtons(false);
         saveNewItemStateButton.setVisible(false);
 //        saveNewItemStateButton.setDisable(true);
         barCodeField.focusedProperty().addListener(($0, $1, newPropertyValue) -> {
             if (!newPropertyValue) {
-
                 isFilledByBarcode = fillInputsBySelectedStockItem();
             }
 
@@ -91,7 +93,7 @@ public class StockController implements Initializable {
                 setButtons(false);
             }
         });
-        ap.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        anchorPane.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (!editMode) {
                 warehouseTableView.getSelectionModel().clearSelection();
             }
