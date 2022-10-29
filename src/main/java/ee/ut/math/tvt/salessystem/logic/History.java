@@ -27,7 +27,7 @@ public class History {
      */
     public List<Purchase> getLastTenPurchases(){
         List<Purchase> purchases = dao.getPurchases();
-        return purchases.subList(purchases.size()  - 10, purchases.size());
+        return purchases.subList(purchases.size() - 10, purchases.size());
     }
 
     /**

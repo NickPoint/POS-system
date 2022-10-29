@@ -3,6 +3,7 @@ package ee.ut.math.tvt.salessystem.ui;
 import ee.ut.math.tvt.salessystem.SalesSystemException;
 import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
+import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 import ee.ut.math.tvt.salessystem.logic.History;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -144,6 +146,13 @@ public class ConsoleUI {
         }
     }
 
+    private void showHistoryBetweenDates(LocalDate firstDate, LocalDate secondDate) {
+        List<Purchase> betweenDatesList = history.getBetweenDates(firstDate, secondDate);
+        for (Purchase purchase: betweenDatesList) {
+            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "\t" + "Total: " + purchase.getSum());
+        }
+    }
+
     private void printUsage() {
         System.out.println("-------------------------");
         System.out.println("Usage:");
@@ -157,6 +166,9 @@ public class ConsoleUI {
         System.out.println("b IDX NR \tResupply NR of stock item with index IDX to the warehouse");
         System.out.println("n IDX NAME PRICE NR\tAdd an amount (NR) of a new product with index IDX, name (NAME) and price (PRICE) to the warehouse");
         System.out.println("                   \tTo add product with name consisting of more than one word, enclose it in ''");
+        System.out.println("d FIRSTDATE SECONDDATE\tShow the history of purchases between FIRSTDATE and SECONDDATE");
+        System.out.println("                      \tDates format is yyyy-MM-dd");
+
         System.out.println("-------------------------");
     }
 
@@ -170,6 +182,14 @@ public class ConsoleUI {
         else if (c[0].equals("w")) {
             showStock();
             showSoldOutItems();
+        } else if (c[0].equals("d") && c.length == 3){
+            try {
+                LocalDate firstDate = LocalDate.parse(c[1]);
+                LocalDate secondDate = LocalDate.parse(c[2]);
+                showHistoryBetweenDates(firstDate, secondDate);
+            } catch (SalesSystemException | NumberFormatException e) {
+                log.error(e.getMessage());
+            }
         }
         else if (c[0].equals("c"))
             showCart();
