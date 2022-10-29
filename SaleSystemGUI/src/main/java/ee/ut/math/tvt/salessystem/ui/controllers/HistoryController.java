@@ -16,7 +16,10 @@ import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 /**
@@ -70,6 +73,7 @@ public class HistoryController implements Initializable {
 
     @FXML
     public void showLastTenButtonClicked() {
+        log.info("Loading purchases");
         historyTableView.setItems(FXCollections.observableList(history.getLastTenPurchases()));
         purchaseDetailsTableView.setItems(null);
         purchaseDetailsTableView.refresh();
@@ -77,11 +81,26 @@ public class HistoryController implements Initializable {
 
     @FXML
     public void showBetweenDatesButtonClicked() {
+        log.info("Loading purchases");
+        LocalDate startDate = this.startDate.getValue();
+        LocalDate endDate = this.endDate.getValue();
+        log.debug("Start date is: " + startDate + "; " + "End date is: " + endDate);
+        if (startDate != null && endDate != null) {
+            historyTableView.setItems(FXCollections.observableList(history.getBetweenDates(startDate, endDate)));
+            purchaseDetailsTableView.setItems(null);
+            purchaseDetailsTableView.refresh();
+        }
+        else{
+            log.error("Dates are invalid");
+        }
 
     }
 
     @FXML
     public void showAllButtonClicked() {
-
+        log.info("Loading purchases");
+        historyTableView.setItems(FXCollections.observableList(history.getLastYear()));
+        purchaseDetailsTableView.setItems(null);
+        purchaseDetailsTableView.refresh();
     }
 }
