@@ -7,9 +7,9 @@ import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class InMemorySalesSystemDAO implements SalesSystemDAO {
 
@@ -63,16 +63,17 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
 
     /**
      * Generate dummy purchase history
-     * @param year a year around which we build an interval
+     *
+     * @param year   a year around which we build an interval
      * @param deltaS defines start of the date interval
      * @param deltaE defines end of the date interval
-     * @param n number of purchases to add
+     * @param n      number of purchases to add
      */
     private void generateHistory(int year, int deltaS, int deltaE, int n) {
         var current = ThreadLocalRandom.current();
         for (int i = 0; i < n; i++) {
             var date = LocalDate.of(
-                    current.nextInt(year - deltaS, year - deltaE+1),
+                    current.nextInt(year - deltaS, year - deltaE + 1),
                     current.nextInt(1, 13),
                     current.nextInt(1, 29)
             );
@@ -80,13 +81,19 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
                     current.nextInt(0, 24),
                     current.nextInt(0, 60)
             );
-            List<SoldItem> purchase = new ArrayList<>();
+            Map<Long, SoldItem> purchase = new HashMap<>();
             int numberOfProducts = current.nextInt(1, 15);
             for (int j = 0; j < numberOfProducts; j++) {
                 int choice = current.nextInt(0, stockItemList.size());
-                purchase.add(new SoldItem(stockItemList.get(choice), current.nextInt(1, 33)));
+                Long id = stockItemList.get(choice).getId();
+                int quantity = current.nextInt(1, 33);
+                purchase.putIfAbsent(id, new SoldItem(stockItemList.get(choice), quantity));
+                purchase.computeIfPresent(id, (key, oldItem) -> {
+                    oldItem.setQuantity(oldItem.getQuantity() + quantity);
+                    return oldItem;
+                });
             }
-            purchaseList.add(new Purchase(purchase, time, date));
+            purchaseList.add(new Purchase(new ArrayList<>(purchase.values()), time, date));
         }
     }
 
