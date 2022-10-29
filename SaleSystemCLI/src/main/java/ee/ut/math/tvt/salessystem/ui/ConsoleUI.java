@@ -121,7 +121,7 @@ public class ConsoleUI {
                         .map(so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity()))
                         .toArray(String[]::new));
         if(!message.isBlank()) {
-            System.out.println("Sold out items are:");
+            System.out.println("Nearly sold out items are:");
             System.out.println(message);
         }
     }
@@ -153,22 +153,30 @@ public class ConsoleUI {
         }
     }
 
+    private void showLastTenPurchases() {
+        List<Purchase> lastTenList = history.getLastTenPurchases();
+        for (Purchase purchase: lastTenList) {
+            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "\t" + "Total: " + purchase.getSum());
+        }
+    }
+
     private void printUsage() {
         System.out.println("-------------------------");
         System.out.println("Usage:");
         System.out.println("h\t\tShow this help");
+        System.out.println("q\t\tExit the CLI");
         System.out.println("w\t\tShow warehouse contents");
         System.out.println("c\t\tShow cart contents");
         System.out.println("a IDX NR \tAdd NR of stock item with index IDX to the cart");
         System.out.println("p\t\tPurchase the shopping cart");
         System.out.println("r\t\tReset the shopping cart");
         System.out.println("t\t\tPrint team info");
+        System.out.println("l\t\tShow last ten purchases");
         System.out.println("b IDX NR \tResupply NR of stock item with index IDX to the warehouse");
         System.out.println("n IDX NAME PRICE NR\tAdd an amount (NR) of a new product with index IDX, name (NAME) and price (PRICE) to the warehouse");
         System.out.println("                   \tTo add product with name consisting of more than one word, enclose it in ''");
         System.out.println("d FIRSTDATE SECONDDATE\tShow the history of purchases between FIRSTDATE and SECONDDATE");
         System.out.println("                      \tDates format is yyyy-MM-dd");
-
         System.out.println("-------------------------");
     }
 
@@ -190,6 +198,8 @@ public class ConsoleUI {
             } catch (SalesSystemException | NumberFormatException e) {
                 log.error(e.getMessage());
             }
+        } else if (c[0].equals("l")) {
+            showLastTenPurchases();
         }
         else if (c[0].equals("c"))
             showCart();
