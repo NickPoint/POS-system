@@ -160,6 +160,13 @@ public class ConsoleUI {
         }
     }
 
+    private void showAllUpToOneYear() {
+        List<Purchase> upToOneYearList = history.getLastYear();
+        for (Purchase purchase: upToOneYearList) {
+            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "\t" + "Total: " + purchase.getSum());
+        }
+    }
+
     private void printUsage() {
         System.out.println("-------------------------");
         System.out.println("Usage:");
@@ -172,6 +179,7 @@ public class ConsoleUI {
         System.out.println("r\t\tReset the shopping cart");
         System.out.println("t\t\tPrint team info");
         System.out.println("l\t\tShow last ten purchases");
+        System.out.println("y\t\tShow all purchases that are up to one year");
         System.out.println("b IDX NR \tResupply NR of stock item with index IDX to the warehouse");
         System.out.println("n IDX NAME PRICE NR\tAdd an amount (NR) of a new product with index IDX, name (NAME) and price (PRICE) to the warehouse");
         System.out.println("                   \tTo add product with name consisting of more than one word, enclose it in ''");
@@ -198,8 +206,6 @@ public class ConsoleUI {
             } catch (SalesSystemException | NumberFormatException e) {
                 log.error(e.getMessage());
             }
-        } else if (c[0].equals("l")) {
-            showLastTenPurchases();
         }
         else if (c[0].equals("c"))
             showCart();
@@ -209,6 +215,12 @@ public class ConsoleUI {
             cart.cancelCurrentPurchase();
         else if (c[0].equals("t"))
             showTeam();
+        else if (c[0].equals("l")) {
+            showLastTenPurchases();
+        }
+        else if (c[0].equals("y")) {
+            showAllUpToOneYear();
+        }
         else if (c[0].equals("a") && c.length == 3) {
             try {
                 long idx = Long.parseLong(c[1]);
