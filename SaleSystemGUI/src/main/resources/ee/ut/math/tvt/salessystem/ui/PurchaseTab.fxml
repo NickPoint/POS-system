@@ -89,11 +89,7 @@
                     <PropertyValueFactory property="name" />
                   </cellValueFactory>
                 </TableColumn>
-                <TableColumn text="Price">
-                  <cellValueFactory>
-                    <PropertyValueFactory property="price" />
-                  </cellValueFactory>
-                </TableColumn>
+                <TableColumn fx:id="itemPrice" text="Price" />
                 <TableColumn text="Quantity">
                   <cellValueFactory>
                     <PropertyValueFactory property="quantity" />
