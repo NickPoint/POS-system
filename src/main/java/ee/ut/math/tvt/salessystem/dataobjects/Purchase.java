@@ -31,4 +31,11 @@ public class Purchase {
     public LocalDate getDate() {
         return date;
     }
+
+    @Override
+    public String toString() {
+        return "Purchase, time=" + time +
+                ", date=" + date +
+                ", sum=" + sum;
+    }
 }
