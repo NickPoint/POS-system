@@ -26,38 +26,38 @@ public class ShoppingCart {
     public void addItem(SoldItem item) {
         // TODO verify that warehouse items' quantity remains at least zero or throw an exception
         try {
-            if (item.getQuantity() < 0){
+            if (item.getQuantity() < 0) {
                 throw new SalesSystemException("Product quantity cannot be negative!");
             }
             StockItem stockItem = dao.findStockItem(item.getId());
+            //The product we add is not yet in shopping cart, we add it now, but first we need to check the quantity
+            if (item.getQuantity() > stockItem.getQuantity()) {
+                throw new SalesSystemException("Max quantity exceeded!");
+            }
+            //Defensive quantity reduction, so that manipulating items in the warehouse does not result in
+            // the erroneous state in the shopping cart
+            stockItem.setQuantity(stockItem.getQuantity() - item.getQuantity());
             //Look for item in the items already added to shopping cart
             for (int i = 0; i < items.size(); i++) {
                 if (items.get(i).getId() == item.getId()) {
-                    int newQuantity = items.get(i).getQuantity() + item.getQuantity();
-                    if (newQuantity > stockItem.getQuantity()){
-                        throw new SalesSystemException("Max quantity exceeded!");
-                    }
-                    items.get(i).setQuantity(newQuantity);
+                    //Update quantity of the item
+                    items.get(i).setQuantity(items.get(i).getQuantity() + item.getQuantity());
                     log.debug("Updated stock of item" + item.getName() + "in the cart, new quantity: " + item.getQuantity());
                     return;
                 }
             }
-            //The product we add is not yet in shopping cart, we add it now, but first we need to check the quantity
-            if (item.getQuantity() > stockItem.getQuantity()){
-                throw new SalesSystemException("Max quantity exceeded!");
-            }
             items.add(item);
             log.debug("Added " + item.getName() + " quantity of " + item.getQuantity());
-        } catch (SalesSystemException e){
-           log.error(e.getMessage());
+        } catch (SalesSystemException e) {
+            log.error(e.getMessage());
             throw e;
         }
     }
 
-    public String deleteFromShoppingCart(Long id){
+    public String deleteFromShoppingCart(Long id) {
         return items.removeIf(product -> product.getId().equals(id)) ?
                 ("Successfully deleted an item with barcode " + id) :
-                ("The item with barcode "+id+" is not in the cart!" );
+                ("The item with barcode " + id + " is not in the cart!");
     }
 
     public List<SoldItem> getAll() {

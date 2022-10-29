@@ -50,14 +50,16 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
 
     @Override
     public void saveSoldItem(SoldItem item) {
-        for (int i = 0; i < stockItemList.size(); i++) {
-            if(stockItemList.get(i).getId().equals(item.getId())){
-                stockItemList.get(i).setQuantity(stockItemList.get(i).getQuantity()-item.getQuantity());
-                break;
-            }
-        }
+//        for (int i = 0; i < stockItemList.size(); i++) {
+//            if(stockItemList.get(i).getId().equals(item.getId())){
+//                stockItemList.get(i).setQuantity(stockItemList.get(i).getQuantity()-item.getQuantity());
+//                break;
+//            }
+//        }
         soldItemList.add(item);
     }
+
+
 
     public void finalisePurchase(){
         purchaseList.add(new Purchase(soldItemList, LocalTime.now(), LocalDate.now()));
@@ -97,4 +99,5 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
     public boolean deleteItem(Long id) {
         return stockItemList.removeIf(stockItem -> stockItem.getId().equals(id));
     }
+
 }
