@@ -3,12 +3,16 @@ package ee.ut.math.tvt.salessystem.ui.controllers;
 import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.logic.History;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,7 +43,13 @@ public class HistoryController implements Initializable {
     private TableView<Purchase> historyTableView;
     @FXML
     private TableView<SoldItem> purchaseDetailsTableView;
+    @FXML
+    private TableColumn<Purchase, String> purchaseSum;
+    @FXML
+    private TableColumn<SoldItem, String> itemSum;
 
+    @FXML
+    private TableColumn<SoldItem, String> itemPrice;
 
     public HistoryController(History history) {
         this.history = history;
@@ -53,6 +63,9 @@ public class HistoryController implements Initializable {
                 purchaseDetailsTableView.refresh();
             }
         });
+        purchaseSum.setCellValueFactory(p -> new ReadOnlyObjectWrapper(String.format("%.2f", p.getValue().getSum())));
+        itemSum.setCellValueFactory(p -> new ReadOnlyObjectWrapper(String.format("%.2f", p.getValue().getSum())));
+        itemPrice.setCellValueFactory(p-> new ReadOnlyObjectWrapper(String.format("%.2f", p.getValue().getPrice())));
     }
 
     @FXML
