@@ -167,6 +167,10 @@ public class ConsoleUI {
         }
     }
 
+    private void deleteFromShoppingCart(Long idx) {
+        System.out.println(cart.deleteFromShoppingCart(idx));
+    }
+
     private void printUsage() {
         System.out.println("-------------------------");
         System.out.println("Usage:");
@@ -180,6 +184,7 @@ public class ConsoleUI {
         System.out.println("t\t\tPrint team info");
         System.out.println("l\t\tShow last ten purchases");
         System.out.println("y\t\tShow all purchases that are up to one year");
+        System.out.println("e IDX\t\tDelete an item with index IDX from the shopping cart");
         System.out.println("b IDX NR \tResupply NR of stock item with index IDX to the warehouse");
         System.out.println("n IDX NAME PRICE NR\tAdd an amount (NR) of a new product with index IDX, name (NAME) and price (PRICE) to the warehouse");
         System.out.println("                   \tTo add product with name consisting of more than one word, enclose it in ''");
@@ -232,6 +237,13 @@ public class ConsoleUI {
                     System.out.println("no stock item with id " + idx);
                 }
             } catch (SalesSystemException | NoSuchElementException e) {
+                log.error(e.getMessage());
+            }
+        } else if (c[0].equals("e") && c.length == 2) {
+            try {
+                long idx = Long.parseLong(c[1]);
+                deleteFromShoppingCart(idx);
+            } catch (NumberFormatException e) {
                 log.error(e.getMessage());
             }
         } else if (c[0].equals("b") && c.length == 3) {
