@@ -8,12 +8,16 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.PopupWindow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Stream;
+
 /**
  * Encapsulates everything that has to do with the warehouse tab (the tab
  * labelled "Warehouse" in the menu). Consists of the current item dialog and warehouse table.
@@ -29,6 +33,8 @@ public class StockController implements Initializable {
     //Holds information whether to show information window about sol-outs
     private boolean soldOutIsShown = true;
 
+    private boolean editMode = false;
+
     private Long selectedItemId = -1L;
 
     @FXML
@@ -37,6 +43,7 @@ public class StockController implements Initializable {
     private TableView<StockItem> warehouseTableView;
     @FXML
     private Button addItemButton;
+
     @FXML
     private TextField barCodeField;
     @FXML
@@ -47,7 +54,16 @@ public class StockController implements Initializable {
     private TextField priceField;
 
     @FXML
-    private Button deleteItem;
+    private Button editItemButton;
+
+    @FXML
+    private Button deleteItemButton;
+
+    @FXML
+    private Button saveNewItemStateButton;
+
+    @FXML
+    private AnchorPane ap;
 
     public StockController(SalesSystemDAO dao, Warehouse warehouse) {
         this.dao = dao;
@@ -57,22 +73,27 @@ public class StockController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         warehouseTableView.setItems(FXCollections.observableList(dao.findStockItems()));
-        deleteItem.setDisable(true);
-        deleteItem.setVisible(false);
+        setButtons(false);
+        saveNewItemStateButton.setVisible(false);
+//        saveNewItemStateButton.setDisable(true);
         barCodeField.focusedProperty().addListener(($0, $1, newPropertyValue) -> {
             if (!newPropertyValue) {
+
                 isFilledByBarcode = fillInputsBySelectedStockItem();
             }
+
         });
         warehouseTableView.getSelectionModel().selectedItemProperty().addListener(($0, $1, selected) -> {
             if (selected != null) {
                 selectedItemId = selected.getId();
-                deleteItem.setVisible(true);
-                deleteItem.setDisable(false);
-            } else{
-                //TODO: Migrate to function
-                deleteItem.setVisible(false);
-                deleteItem.setDisable(true);
+                setButtons(true);
+            } else {
+                setButtons(false);
+            }
+        });
+        ap.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (!editMode) {
+                warehouseTableView.getSelectionModel().clearSelection();
             }
         });
     }
@@ -136,7 +157,7 @@ public class StockController implements Initializable {
         warehouseTableView.refresh();
         if (soldOutIsShown) {
             log.info("Pulling sold-outs");
-            log.debug("Warehouse state: "+dao.findStockItems());
+            log.debug("Warehouse state: " + dao.findStockItems());
             Stream<StockItem> soldOuts = warehouse.getSoldOuts();
             String message = String.join(
                     "\n",
@@ -160,10 +181,11 @@ public class StockController implements Initializable {
     }
 
     @FXML
-    public void deleteItemButtonClicked(){
+    public void deleteItemButtonClicked() {
         log.info("Deleting product from warehouse");
         log.debug("Product id: " + selectedItemId);
-        if (dao.deleteItem(selectedItemId)){
+        if (dao.deleteItem(selectedItemId)) {
+            warehouseTableView.refresh();
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Item was successfully deleted from the warehouse!");
             alert.setTitle("Success!");
@@ -171,9 +193,28 @@ public class StockController implements Initializable {
         }
     }
 
+    @FXML
+    public void editItemButtonClicked() {
+        editMode = true;
+        StockItem stockItem = dao.findStockItem(selectedItemId);
+        System.out.println("sdasd");
+        if (stockItem != null) {
+            barCodeField.setText(String.valueOf(stockItem.getId()));
+            nameField.setText(stockItem.getName());
+            quantityField.setText(String.valueOf(stockItem.getQuantity()));
+            priceField.setText(String.valueOf(stockItem.getPrice()));
+
+        }
+    }
+
+    @FXML
+    public void saveNewItemStateButtonClicked() {
+        editMode = true;
+
+    }
+
 
     /**
-     *
      * @return
      */
     private boolean fillInputsBySelectedStockItem() {
@@ -201,6 +242,13 @@ public class StockController implements Initializable {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    private void setButtons(boolean flag) {
+        deleteItemButton.setVisible(flag);
+        deleteItemButton.setDisable(!flag);
+        editItemButton.setVisible(flag);
+        editItemButton.setDisable(!flag);
     }
 
     /**
