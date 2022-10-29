@@ -109,54 +109,54 @@
           </top>
         </BorderPane>
       </TitledPane>
-<!--      <AnchorPane>-->
-<!--         <children>-->
-<!--            <TitledPane alignment="CENTER" animated="false" collapsible="false" text="Warehouse status" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">-->
-<!--              <BorderPane styleClass="background_style">-->
-<!--                <center>-->
-<!--                  <TableView fx:id="warehouseTableView" styleClass="blue_style" BorderPane.alignment="CENTER">-->
-<!--                    <columns>-->
-<!--                      <TableColumn text="Id">-->
-<!--                        <cellValueFactory>-->
-<!--                          <PropertyValueFactory property="id" />-->
-<!--                        </cellValueFactory>-->
-<!--                      </TableColumn>-->
-<!--                      <TableColumn text="Name">-->
-<!--                        <cellValueFactory>-->
-<!--                          <PropertyValueFactory property="name" />-->
-<!--                        </cellValueFactory>-->
-<!--                      </TableColumn>-->
-<!--                      <TableColumn text="Price">-->
-<!--                        <cellValueFactory>-->
-<!--                          <PropertyValueFactory property="price" />-->
-<!--                        </cellValueFactory>-->
-<!--                      </TableColumn>-->
-<!--                      <TableColumn text="Quantity">-->
-<!--                        <cellValueFactory>-->
-<!--                          <PropertyValueFactory property="quantity" />-->
-<!--                        </cellValueFactory>-->
-<!--                      </TableColumn>-->
-<!--                    </columns>-->
-<!--                    <columnResizePolicy>-->
-<!--                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />-->
-<!--                    </columnResizePolicy>-->
-<!--                  </TableView>-->
-<!--                </center>-->
-<!--                <top>-->
-<!--                     <HBox BorderPane.alignment="TOP_LEFT">-->
-<!--                        <children>-->
-<!--                        <Button onMouseClicked="#refreshButtonClicked" text="Refresh warehouse" />-->
-<!--                           <Button fx:id="deleteItem" mnemonicParsing="false" onAction="#deleteItemButtonClicked" text="Delete">-->
-<!--                              <HBox.margin>-->
-<!--                                 <Insets left="150.0" />-->
-<!--                              </HBox.margin>-->
-<!--                           </Button>-->
-<!--                        </children>-->
-<!--                     </HBox>-->
-<!--                </top>-->
-<!--              </BorderPane>-->
-<!--            </TitledPane>-->
-<!--         </children>-->
-<!--      </AnchorPane>-->
+      <AnchorPane>
+         <children>
+            <TitledPane alignment="CENTER" animated="false" collapsible="false" text="Warehouse status" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <BorderPane styleClass="background_style">
+                <center>
+                  <TableView fx:id="warehouseTableView" styleClass="blue_style" BorderPane.alignment="CENTER">
+                    <columns>
+                      <TableColumn text="Id">
+                        <cellValueFactory>
+                          <PropertyValueFactory property="id" />
+                        </cellValueFactory>
+                      </TableColumn>
+                      <TableColumn text="Name">
+                        <cellValueFactory>
+                          <PropertyValueFactory property="name" />
+                        </cellValueFactory>
+                      </TableColumn>
+                      <TableColumn text="Price">
+                        <cellValueFactory>
+                          <PropertyValueFactory property="price" />
+                        </cellValueFactory>
+                      </TableColumn>
+                      <TableColumn text="Quantity">
+                        <cellValueFactory>
+                          <PropertyValueFactory property="quantity" />
+                        </cellValueFactory>
+                      </TableColumn>
+                    </columns>
+                    <columnResizePolicy>
+                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                  </TableView>
+                </center>
+                <top>
+                     <HBox BorderPane.alignment="TOP_LEFT">
+                        <children>
+                        <Button onMouseClicked="#refreshButtonClicked" text="Refresh warehouse" />
+                           <Button fx:id="deleteItem" mnemonicParsing="false" onAction="#deleteItemButtonClicked" text="Delete">
+                              <HBox.margin>
+                                 <Insets left="150.0" />
+                              </HBox.margin>
+                           </Button>
+                        </children>
+                     </HBox>
+                </top>
+              </BorderPane>
+            </TitledPane>
+         </children>
+      </AnchorPane>
    </items>
 </SplitPane>
