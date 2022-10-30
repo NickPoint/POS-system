@@ -41,9 +41,11 @@ public class ConsoleUI {
         this.warehouse = new Warehouse(dao);
         this.history = new History(dao);
         this.team = new Team();
+        dao.getPurchases().forEach(System.out::println);
     }
 
     public static void main(String[] args) throws Exception {
+        log.info("Starting up the sales system CLI");
         SalesSystemDAO dao = new InMemorySalesSystemDAO();
         ConsoleUI console = new ConsoleUI(dao);
         console.run();
@@ -99,7 +101,9 @@ public class ConsoleUI {
     }
 
     private void addByBarcode(String[] c) {
+        log.info("Received tokens for adding item by barcode");
         try {
+            log.debug("Received following tokens: " + Arrays.toString(c));
             long idx = Long.parseLong(c[1]);
             int amount = Integer.parseInt(c[2]);
             StockItem item = dao.findStockItem(idx);
@@ -127,7 +131,9 @@ public class ConsoleUI {
     }
 
     private void resupplyNewItem(String[] info) {
+        log.info("Received info for item to resupply");
         try {
+            log.debug("Received following tokens: " + Arrays.toString(info));
             long idx = Long.parseLong(info[1]);
             String name = info[2];
             double price = Double.parseDouble(info[3]);
@@ -149,26 +155,35 @@ public class ConsoleUI {
     private void showHistoryBetweenDates(LocalDate firstDate, LocalDate secondDate) {
         List<Purchase> betweenDatesList = history.getBetweenDates(firstDate, secondDate);
         for (Purchase purchase: betweenDatesList) {
-            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "\t" + "Total: " + purchase.getSum());
+            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "    Total: " + purchase.getSum());
         }
     }
 
     private void showLastTenPurchases() {
         List<Purchase> lastTenList = history.getLastTenPurchases();
         for (Purchase purchase: lastTenList) {
-            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "\t" + "Total: " + purchase.getSum());
+            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "    Total: " + purchase.getSum());
         }
     }
 
     private void showAllUpToOneYear() {
         List<Purchase> upToOneYearList = history.getLastYear();
         for (Purchase purchase: upToOneYearList) {
-            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "\t" + "Total: " + purchase.getSum());
+            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "    Total: " + purchase.getSum());
         }
     }
 
     private void deleteFromShoppingCart(Long idx) {
+        log.debug("Received following index: " + idx);
         System.out.println(cart.deleteFromShoppingCart(idx));
+    }
+
+    private void deleteFromWarehouse(Long idx) {
+        log.debug("Received following index: " + idx);
+        if(warehouse.deleteFromStock(idx)) System.out.println("Item with index " + idx + " is removed from the warehouse");
+        else {
+            System.out.println("Item with index " + idx + " is not in the warehouse!");
+        }
     }
 
     private void printUsage() {
@@ -185,6 +200,7 @@ public class ConsoleUI {
         System.out.println("l\t\tShow last ten purchases");
         System.out.println("y\t\tShow all purchases that are up to one year");
         System.out.println("e IDX\t\tDelete an item with index IDX from the shopping cart");
+        System.out.println("ew IDX\t\tDelete an item with index IDX from the warehouse");
         System.out.println("b IDX NR \tResupply NR of stock item with index IDX to the warehouse");
         System.out.println("n IDX NAME PRICE NR\tAdd an amount (NR) of a new product with index IDX, name (NAME) and price (PRICE) to the warehouse");
         System.out.println("                   \tTo add product with name consisting of more than one word, enclose it in ''");
@@ -194,8 +210,9 @@ public class ConsoleUI {
     }
 
     private void processCommand(String command) {
+        log.info("User output received");
         String[] c = command.split(" ");
-
+        log.debug("Received tokens from user: " + Arrays.toString(c));
         if (c[0].equals("h"))
             printUsage();
         else if (c[0].equals("q"))
@@ -204,6 +221,7 @@ public class ConsoleUI {
             showStock();
             showSoldOutItems();
         } else if (c[0].equals("d") && c.length == 3){
+            log.info("Showing the history of purchases between FIRSTDATE and SECONDDATE");
             try {
                 LocalDate firstDate = LocalDate.parse(c[1]);
                 LocalDate secondDate = LocalDate.parse(c[2]);
@@ -227,6 +245,7 @@ public class ConsoleUI {
             showAllUpToOneYear();
         }
         else if (c[0].equals("a") && c.length == 3) {
+            log.info("Adding NR of stock item with index IDX to the cart");
             try {
                 long idx = Long.parseLong(c[1]);
                 int amount = Integer.parseInt(c[2]);
@@ -240,19 +259,30 @@ public class ConsoleUI {
                 log.error(e.getMessage());
             }
         } else if (c[0].equals("e") && c.length == 2) {
+            log.info("Deleting item with index IDX from the shopping cart");
             try {
                 long idx = Long.parseLong(c[1]);
                 deleteFromShoppingCart(idx);
             } catch (NumberFormatException e) {
                 log.error(e.getMessage());
             }
-        } else if (c[0].equals("b") && c.length == 3) {
+        } else if (c[0].equals("ew") && c.length == 2) {
+            log.info("Deleting item with index IDX from the warehouse");
+            try {
+                long idx = Long.parseLong(c[1]);
+                deleteFromWarehouse(idx);
+            } catch (NumberFormatException e) {
+                log.error(e.getMessage());
+            }
+        }
+        else if (c[0].equals("b") && c.length == 3) {
             addByBarcode(c);
         } else if (c[0].equals("n") && c.length >= 5) {
             if (c.length == 5) {
                 resupplyNewItem(c);
             } else {
                 String[] tokens = command.split("'");
+                log.debug("Received following tokens: " + Arrays.toString(tokens));
                 if (tokens.length == 3) {
                     String[] nc = Stream.concat(
                             Stream.concat(
@@ -262,6 +292,7 @@ public class ConsoleUI {
                             Arrays.stream(tokens[2].split(" "))
                                     .filter(Predicate.not(String::isBlank))
                     ).toArray(String[]::new);
+                    log.debug("Received following tokens: " + Arrays.toString(nc));
                     resupplyNewItem(nc);
                     //Low-level fallback option
 //                if (c[2].charAt(0) == '\'' && c[c.length - 3].endsWith("'")) {

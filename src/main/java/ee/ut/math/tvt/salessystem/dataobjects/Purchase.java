@@ -18,8 +18,9 @@ public class Purchase {
     }
 
     public double getSum() {
-        return sum;
+        return Math.round(sum * 100) / 100.0;
     }
+
     public List<SoldItem> getBoughtItems() {
         return boughtItems;
     }

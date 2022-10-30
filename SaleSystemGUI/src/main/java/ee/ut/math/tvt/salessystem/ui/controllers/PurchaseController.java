@@ -50,7 +50,7 @@ public class PurchaseController implements Initializable {
     private TableView<SoldItem> purchaseTableView;
 
     @FXML
-    private TableColumn<StockItem, String> itemPrice;
+    private TableColumn<SoldItem, String> itemPrice;
 
     public PurchaseController(SalesSystemDAO dao, ShoppingCart shoppingCart) {
         this.dao = dao;
