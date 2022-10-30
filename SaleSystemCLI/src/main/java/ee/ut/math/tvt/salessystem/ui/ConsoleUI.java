@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +49,9 @@ public class ConsoleUI {
         log.info("Starting up the sales system CLI");
         SalesSystemDAO dao = new InMemorySalesSystemDAO();
         ConsoleUI console = new ConsoleUI(dao);
+        System.out.println(System.getenv("GRADLE_OPTS"));
+        System.out.println(System.getProperty("file.encoding"));
+        System.out.println("们".getBytes(StandardCharsets.UTF_8));
         console.run();
     }
 
@@ -96,7 +100,7 @@ public class ConsoleUI {
         System.out.println("Team name   " + team.getTeamName());
         System.out.println("Team leader   " + team.getTeamLeader());
         System.out.println("Team leader email   " + team.getTeamLeaderEmail());
-        System.out.println("Team members   " + String.join(" ", team.getTeamMembers()));
+        System.out.println("Team members   " + String.join(", ", team.getTeamMembers()));
         System.out.println("-------------------------");
     }
 

@@ -37,9 +37,8 @@ public interface SalesSystemDAO {
 
     void saveStockItem(StockItem stockItem);
 
+    //https://stackoverflow.com/q/974596
     void saveSoldItem(SoldItem item);
-//    https://stackoverflow.com/q/974596
-
 
     void finalisePurchase();
 

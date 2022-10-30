@@ -71,7 +71,7 @@ public class HistoryController implements Initializable {
 
     @FXML
     public void showLastTenButtonClicked() {
-        log.info("Loading purchases");
+        log.info("Loading last 10 purchases");
         historyTableView.setItems(FXCollections.observableList(history.getLastTenPurchases()));
         purchaseDetailsTableView.setItems(null);
         purchaseDetailsTableView.refresh();
@@ -79,8 +79,9 @@ public class HistoryController implements Initializable {
 
     @FXML
     public void showBetweenDatesButtonClicked() {
-        log.info("Loading purchases");
+        log.info("Loading purchases for a given date interval");
         LocalDate startDate = this.startDate.getValue();
+        System.out.println(startDate);
         LocalDate endDate = this.endDate.getValue();
         log.debug("Start date is: " + startDate + "; " + "End date is: " + endDate);
         if (startDate != null && endDate != null) {
@@ -96,7 +97,7 @@ public class HistoryController implements Initializable {
 
     @FXML
     public void showAllButtonClicked() {
-        log.info("Loading purchases");
+        log.info("Loading purchases made in a year");
         historyTableView.setItems(FXCollections.observableList(history.getLastYear()));
         purchaseDetailsTableView.setItems(null);
         purchaseDetailsTableView.refresh();

@@ -32,7 +32,7 @@ public class ShoppingCart {
             StockItem stockItem = dao.findStockItem(item.getId());
             //The product we add is not yet in shopping cart, we add it now, but first we need to check the quantity
             if (item.getQuantity() > stockItem.getQuantity()) {
-                throw new SalesSystemException("Max quantity exceeded!");
+                throw new SalesSystemException("You cannot add more items than in stock!");
             }
             //Defensive quantity reduction, so that manipulating items in the warehouse does not result in
             // the erroneous state in the shopping cart
@@ -66,6 +66,12 @@ public class ShoppingCart {
     }
 
     public void cancelCurrentPurchase() {
+        items.forEach(soldItem ->
+        {
+            StockItem stockItem = dao.findStockItem(soldItem.getId());
+            stockItem.setQuantity(stockItem.getQuantity() + soldItem.getQuantity());
+            dao.saveStockItem(stockItem);
+        });
         items.clear();
     }
 

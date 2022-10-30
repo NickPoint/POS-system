@@ -45,7 +45,8 @@ public class StockController implements Initializable {
     private TableView<StockItem> warehouseTableView;
     @FXML
     private Button addItemButton;
-
+//    @FXML
+//    private ComboBox dropDown;
     @FXML
     private TextField barCodeField;
     @FXML
@@ -75,15 +76,34 @@ public class StockController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         warehouseTableView.setItems(FXCollections.observableList(dao.findStockItems()));
-        itemPrice.setCellValueFactory(p-> new ReadOnlyObjectWrapper(String.format("%.2f", p.getValue().getPrice())));
+        itemPrice.setCellValueFactory(p -> new ReadOnlyObjectWrapper(String.format("%.2f", p.getValue().getPrice())));
         setButtons(false);
         saveNewItemStateButton.setVisible(false);
+//        dropDown.setEditable(true);
+//        dropDown.valueProperty().addListener(
+//                ($0, $1, selected) -> {
+//                    if (selected instanceof StockItem){
+//                        var item = (StockItem) selected;
+//                        fillInputsByStockItem(item);
+//                    }
+//                    else {
+//                        selected.toString();
+//                    }
+//                    System.out.println(selected);
+//                }
+//        );
+//        dropDown.getItems().addAll(
+//                dao.findStockItems().get(0),
+//                dao.findStockItems().get(1),
+//                dao.findStockItems().get(2)
+//        );
+        //dropDown.setCellFactory(p->new ReadOnlyObjectWrapper<String>(p.toString()));
+
 //        saveNewItemStateButton.setDisable(true);
         barCodeField.focusedProperty().addListener(($0, $1, newPropertyValue) -> {
             if (!newPropertyValue) {
                 isFilledByBarcode = fillInputsBySelectedStockItem();
             }
-
         });
         warehouseTableView.getSelectionModel().selectedItemProperty().addListener(($0, $1, selected) -> {
             if (selected != null) {
@@ -93,7 +113,7 @@ public class StockController implements Initializable {
                 setButtons(false);
             }
         });
-        anchorPane.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        anchorPane.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
             if (!editMode) {
                 warehouseTableView.getSelectionModel().clearSelection();
             }
@@ -118,7 +138,7 @@ public class StockController implements Initializable {
                 warehouse.addByIdx(idx, amount);
             } else {
                 log.debug("Form was filled automatically");
-                String name = nameField.getText();
+                String name = nameField.getText(); //dropdown.getText();
                 double price = Double.parseDouble(priceField.getText());
                 warehouse.addNewItem(new StockItem(idx, name,
 //                        "",
@@ -199,7 +219,6 @@ public class StockController implements Initializable {
     public void editItemButtonClicked() {
         editMode = true;
         StockItem stockItem = dao.findStockItem(selectedItemId);
-        System.out.println("sdasd");
         if (stockItem != null) {
             barCodeField.setText(String.valueOf(stockItem.getId()));
             nameField.setText(stockItem.getName());
@@ -217,6 +236,7 @@ public class StockController implements Initializable {
 
 
     /**
+     * TODO: Candidate for refactoring
      * @return
      */
     private boolean fillInputsBySelectedStockItem() {
@@ -229,6 +249,17 @@ public class StockController implements Initializable {
         }
         return false;
     }
+
+//    /**
+//     * TODO: Candidate for refactoring
+//     * @return
+//     */
+//    private void fillInputsByStockItem(StockItem stockItem) {
+////        barCodeField.setText(String.valueOf(stockItem.getId()));
+//        nameField.setText(stockItem.getName());
+//        priceField.setText(String.valueOf(stockItem.getPrice()));
+//        quantityField.setText(String.valueOf(stockItem.getQuantity()));
+//    }
 
     /**
      * Search the warehouse for a {@code StockItem} with the bar code entered

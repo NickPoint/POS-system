@@ -6,7 +6,6 @@
 <?import javafx.scene.layout.*?>
 
 <!--Correct javafx version http://javafx.com/javafx/8.0.92-->
-
 <SplitPane dividerPositions="0.2" orientation="VERTICAL" xmlns="http://javafx.com/javafx/8.0.92" xmlns:fx="http://javafx.com/fxml/1">
    <items>
       <AnchorPane fx:id="anchorPane" prefHeight="100.0" styleClass="sub_background" SplitPane.resizableWithParent="false">
@@ -33,6 +32,7 @@
                   <TextField fx:id="barCodeField" GridPane.columnIndex="1" />
                   <TextField fx:id="quantityField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+<!--                  <ComboBox fx:id="dropDown" GridPane.columnIndex="1" GridPane.rowIndex="2" />-->
                   <TextField fx:id="priceField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
             </GridPane>
@@ -82,8 +82,8 @@
                            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
                               <children>
                                   <Button fx:id="saveNewItemStateButton" mnemonicParsing="false" onAction="#saveNewItemStateButtonClicked" text="Save" />
-                                  <Button fx:id="deleteItemButton" mnemonicParsing="false" onAction="#deleteItemButtonClicked" text="Delete" />
                                   <Button fx:id="editItemButton" mnemonicParsing="false" onAction="#editItemButtonClicked" text="Edit" />
+                                  <Button fx:id="deleteItemButton" mnemonicParsing="false" onAction="#deleteItemButtonClicked" text="Delete" />
                               </children>
                            </HBox>
                         </children>

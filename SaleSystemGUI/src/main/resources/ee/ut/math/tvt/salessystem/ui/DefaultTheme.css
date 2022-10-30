@@ -6,7 +6,7 @@
     control_color: #01C1CB; /*#03e9f4*/
     /*title_color: #253939;*/
     title_color: #0a0f18;
-    -fx-background-color: linear-gradient(from 25% 100% to 100% 25%, b_color, main_text_color);
+    -fx-background-color: linear-gradient(from 25% 100% to 100% 25%, #141e30, main_text_color);
 }
 
 
@@ -127,7 +127,7 @@
 }
 
 /*
- * 
+ *
  * TabPane
  */
 
@@ -738,11 +738,11 @@
     -fx-background-color: #727272;
 }*/
 
-/*.ListSpinner:focused { 
+/*.ListSpinner:focused {
     -fx-color: -fx-focused-base;
     -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: -1.4, 0, 1, 2;
-    -fx-background-radius: 6.4, 5, 4, 3;    
+    -fx-background-radius: 6.4, 5, 4, 3;
 }*/
 
 .list-spinner .value-pane {
