@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <SplitPane dividerPositions="0.3" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.92" xmlns:fx="http://javafx.com/fxml/1">
   <items>
@@ -35,8 +28,8 @@
                   <Button fx:id="showAllButton" mnemonicParsing="false" onAction="#showAllButtonClicked" prefWidth="150.0" text="Show all" GridPane.rowIndex="3" />
                   <DatePicker fx:id="startDate" maxWidth="500.0" prefWidth="100.0" GridPane.columnIndex="2" />
                   <DatePicker fx:id="endDate" maxWidth="500.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="End date" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start date" GridPane.columnIndex="1" />
+                  <Label text="End date" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="Start date" GridPane.columnIndex="1" />
                </children>
             </GridPane>
          </children></AnchorPane>
@@ -46,7 +39,7 @@
               <items>
                 <AnchorPane>
                      <children>
-                        <TitledPane alignment="CENTER" animated="false" collapsible="false" text="Puchase history" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TitledPane alignment="CENTER" styleClass="background_style" animated="false" collapsible="false" text="Puchase history" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <content>
                               <TableView fx:id="historyTableView">
                                 <columns>
@@ -69,9 +62,9 @@
                           </content>
                         </TitledPane>
                      </children></AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                <AnchorPane>
                      <children>
-                        <TableView fx:id="purchaseDetailsTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="purchaseDetailsTableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
                               <TableColumn prefWidth="75.0" text="Id">
                                   <cellValueFactory>
@@ -83,7 +76,7 @@
                                     <PropertyValueFactory property="name" />
                                 </cellValueFactory>
                             </TableColumn>
-                              <TableColumn  fx:id="itemPrice" prefWidth="75.0" text="Price" />
+                              <TableColumn fx:id="itemPrice" prefWidth="75.0" text="Price" />
                               <TableColumn prefWidth="75.0" text="Quantity">
                                   <cellValueFactory>
                                       <PropertyValueFactory property="quantity" />

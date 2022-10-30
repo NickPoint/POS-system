@@ -3,6 +3,7 @@ package ee.ut.math.tvt.salessystem.ui.controllers;
 import ee.ut.math.tvt.salessystem.logic.Team;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,13 +14,13 @@ import java.util.ResourceBundle;
 public class TeamController implements Initializable {
 
     @FXML
-    private Text teamName;
+    private Label teamName;
     @FXML
-    private Text teamLeader;
+    private Label teamLeader;
     @FXML
-    private Text teamLeadEmail;
+    private Label teamLeadEmail;
     @FXML
-    private Text teamMembers;
+    private Label teamMembers;
 
     private Team team;
 
