@@ -4,8 +4,11 @@ import ee.ut.math.tvt.salessystem.SalesSystemException;
 import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 import ee.ut.math.tvt.salessystem.logic.Warehouse;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -46,10 +49,13 @@ public class WarehouseTest {
             invokedSecond = invokedFirst;
             super.commitTransaction();
         }
+
+        {
+            super.findStockItems().clear();
+        }
     }
 
-
-    // - check that a new item is saved through the DAO
+    // - check that methods beginTransaction and commitTransaction are both called exactly once and
     @Test
     public void testAddingItemBeginsAndCommitsTransaction() {
         invokedFirst = invokedSecond = false;
@@ -62,10 +68,21 @@ public class WarehouseTest {
         assertTrue(counter == 2 && invokedFirst && invokedSecond);
     }
 
-    // - check that methods beginTransaction and commitTransaction are both called exactly once and
+    // - check that a new item is saved through the DAO
     @Test
     public void testAddingNewItem() {
-
+        long id = 1L;
+        String name = "Coca-Cola";
+        double price = 20.5;
+        int quantity = 3;
+        StockItem stockItem = new StockItem(id, name, price, quantity);
+        warehouse.addNewItem(stockItem);
+        StockItem testStockItem;
+        Assert.assertNotNull(testStockItem = dao.findStockItem(id));
+        Assert.assertEquals(testStockItem.getId(), stockItem.getId());
+        Assert.assertEquals(testStockItem.getName(), stockItem.getName());
+        Assert.assertEquals(testStockItem.getPrice(), stockItem.getPrice(), 0.001);
+        Assert.assertEquals(testStockItem.getQuantity(), stockItem.getQuantity());
     }
 
     // - check that adding a new item increases the quantit and the saveStockItem method of the DAO is not called
