@@ -12,12 +12,11 @@ import ee.ut.math.tvt.salessystem.logic.Team;
 import ee.ut.math.tvt.salessystem.logic.Warehouse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -27,6 +26,14 @@ import java.util.stream.Stream;
 /**
  * A simple CLI (limited functionality).
  */
+/*
+* TODO:
+* cosmetic changes:
+*  - add -- to all commands
+*  - extend == in CLI welcome window
+* minute changes:
+*  - refactor some logic into separate methods
+*/
 public class ConsoleUI {
     private static final Logger log = LogManager.getLogger(ConsoleUI.class);
 
@@ -35,6 +42,7 @@ public class ConsoleUI {
     private final Warehouse warehouse;
     private final History history;
     private final Team team;
+    private List<Purchase> lastWatchedPurchasesList = new ArrayList<>();
 
     public ConsoleUI(SalesSystemDAO dao) {
         this.dao = dao;
@@ -42,16 +50,12 @@ public class ConsoleUI {
         this.warehouse = new Warehouse(dao);
         this.history = new History(dao);
         this.team = new Team();
-        dao.getPurchases().forEach(System.out::println);
     }
 
     public static void main(String[] args) throws Exception {
         log.info("Starting up the sales system CLI");
         SalesSystemDAO dao = new InMemorySalesSystemDAO();
         ConsoleUI console = new ConsoleUI(dao);
-        System.out.println(System.getenv("GRADLE_OPTS"));
-        System.out.println(System.getProperty("file.encoding"));
-        System.out.println("们".getBytes(StandardCharsets.UTF_8));
         console.run();
     }
 
@@ -128,7 +132,7 @@ public class ConsoleUI {
                 soldOuts
                         .map(so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity()))
                         .toArray(String[]::new));
-        if(!message.isBlank()) {
+        if (!message.isBlank()) {
             System.out.println("Nearly sold out items are:");
             System.out.println(message);
         }
@@ -157,23 +161,57 @@ public class ConsoleUI {
     }
 
     private void showHistoryBetweenDates(LocalDate firstDate, LocalDate secondDate) {
-        List<Purchase> betweenDatesList = history.getBetweenDates(firstDate, secondDate);
-        for (Purchase purchase: betweenDatesList) {
-            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "    Total: " + purchase.getSum());
-        }
+        this.lastWatchedPurchasesList = history.getBetweenDates(firstDate, secondDate);
+        printPurchaseTable();
     }
 
     private void showLastTenPurchases() {
-        List<Purchase> lastTenList = history.getLastTenPurchases();
-        for (Purchase purchase: lastTenList) {
-            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "    Total: " + purchase.getSum());
-        }
+        this.lastWatchedPurchasesList = history.getLastTenPurchases();
+        printPurchaseTable();
     }
 
     private void showAllUpToOneYear() {
-        List<Purchase> upToOneYearList = history.getLastYear();
-        for (Purchase purchase: upToOneYearList) {
-            System.out.println("Date: " + purchase.getDate() + "\t" + "Time: " + purchase.getTime() + "    Total: " + purchase.getSum());
+        this.lastWatchedPurchasesList = history.getLastYear();
+        printPurchaseTable();
+    }
+
+    private void printPurchaseTable() {
+        int i = 0;
+        System.out.println("IDX   Date:       Time:  Total:");
+        for (Purchase purchase : lastWatchedPurchasesList) {
+            System.out.printf("%-5d %s  %s  %.2f\n", i++, purchase.getDate(), purchase.getTime(), purchase.getSum());
+        }
+    }
+
+    private int numberOfDigits(double number) {
+        return (int) Math.floor(Math.log10(number)) + 1;
+    }
+
+    private void showDetails(int idx) {
+        if (idx < 0 || idx >= lastWatchedPurchasesList.size()) {
+            System.out.println("Invalid index!");
+        }
+        Purchase purchase = lastWatchedPurchasesList.get(idx);
+        List<SoldItem> boughtItems = purchase.getBoughtItems();
+        int idMaxLen = 7;
+        int nameMaxLen = 4;
+        int priceMaxLen = 3;
+        int quantityMaxLen = 6;
+        for (SoldItem item : boughtItems) {
+            idMaxLen = Math.max(idMaxLen, numberOfDigits(item.getId()));
+            nameMaxLen = Math.max(nameMaxLen, item.getName().length());
+            priceMaxLen = Math.max(priceMaxLen, numberOfDigits(item.getPrice()));
+            quantityMaxLen = Math.max(quantityMaxLen, numberOfDigits(item.getQuantity()));
+        }
+        priceMaxLen += 3;
+        String fHeader = "%-" + idMaxLen + "s %-" + nameMaxLen + "s %-" + priceMaxLen + "s %-" + quantityMaxLen + "s %s\n";
+        String fRow = "%-" + idMaxLen + "d %-" + nameMaxLen + "s %-" + priceMaxLen + ".2f %-" + quantityMaxLen + "d %.2f\n";
+        System.out.printf(fHeader, "Barcode", "Name", "Price", "Amount", "Sum");
+        for (SoldItem item : boughtItems) {
+            System.out.printf(fRow,
+                    item.getId(), item.getName(), item.getPrice(),
+                    item.getQuantity(), item.getSum()
+            );
         }
     }
 
@@ -184,7 +222,8 @@ public class ConsoleUI {
 
     private void deleteFromWarehouse(Long idx) {
         log.debug("Received following index: " + idx);
-        if(warehouse.deleteFromStock(idx)) System.out.println("Item with index " + idx + " is removed from the warehouse");
+        if (warehouse.deleteFromStock(idx))
+            System.out.println("Item with index " + idx + " is removed from the warehouse");
         else {
             System.out.println("Item with index " + idx + " is not in the warehouse!");
         }
@@ -203,6 +242,8 @@ public class ConsoleUI {
         System.out.println("t\t\tPrint team info");
         System.out.println("l\t\tShow last ten purchases");
         System.out.println("y\t\tShow all purchases that are up to one year");
+        System.out.println("i IDX\tShow details of a purchase with index IDX from the last shown purchases list");
+        System.out.println("     \tLast shown purchases exists if commands 'Show last ten purchases' or 'Show all purchases that are up to one year' or 'Show the history of purchases between FIRSTDATE and SECONDDATE' was called");
         System.out.println("e IDX\t\tDelete an item with index IDX from the shopping cart");
         System.out.println("ew IDX\t\tDelete an item with index IDX from the warehouse");
         System.out.println("b IDX NR \tResupply NR of stock item with index IDX to the warehouse");
@@ -224,7 +265,7 @@ public class ConsoleUI {
         else if (c[0].equals("w")) {
             showStock();
             showSoldOutItems();
-        } else if (c[0].equals("d") && c.length == 3){
+        } else if (c[0].equals("d") && c.length == 3) {
             log.info("Showing the history of purchases between FIRSTDATE and SECONDDATE");
             try {
                 LocalDate firstDate = LocalDate.parse(c[1]);
@@ -233,8 +274,15 @@ public class ConsoleUI {
             } catch (SalesSystemException | NumberFormatException e) {
                 log.error(e.getMessage());
             }
-        }
-        else if (c[0].equals("c"))
+        } else if (c[0].equals("i") && c.length == 2) {
+            log.info("Showing details of a purchase with index " + c[1] + " from the last shown purchases list");
+            try {
+                int idx = Integer.parseInt(c[1]);
+                showDetails(idx);
+            } catch (NumberFormatException e) {
+                log.error(e.getMessage());
+            }
+        } else if (c[0].equals("c"))
             showCart();
         else if (c[0].equals("p"))
             cart.submitCurrentPurchase();
@@ -244,11 +292,9 @@ public class ConsoleUI {
             showTeam();
         else if (c[0].equals("l")) {
             showLastTenPurchases();
-        }
-        else if (c[0].equals("y")) {
+        } else if (c[0].equals("y")) {
             showAllUpToOneYear();
-        }
-        else if (c[0].equals("a") && c.length == 3) {
+        } else if (c[0].equals("a") && c.length == 3) {
             log.info("Adding NR of stock item with index IDX to the cart");
             try {
                 long idx = Long.parseLong(c[1]);
@@ -278,8 +324,7 @@ public class ConsoleUI {
             } catch (NumberFormatException e) {
                 log.error(e.getMessage());
             }
-        }
-        else if (c[0].equals("b") && c.length == 3) {
+        } else if (c[0].equals("b") && c.length == 3) {
             addByBarcode(c);
         } else if (c[0].equals("n") && c.length >= 5) {
             if (c.length == 5) {

@@ -26,6 +26,7 @@
                   <Button fx:id="showBetweenDatesButton" mnemonicParsing="false" onAction="#showBetweenDatesButtonClicked" prefWidth="150.0" text="Show between dates" />
                   <Button fx:id="showLastTenButton" mnemonicParsing="false" onAction="#showLastTenButtonClicked" prefWidth="150.0" text="Show last 10" GridPane.rowIndex="2" />
                   <Button fx:id="showAllButton" mnemonicParsing="false" onAction="#showAllButtonClicked" prefWidth="150.0" text="Show all" GridPane.rowIndex="3" />
+
                   <DatePicker fx:id="startDate" maxWidth="500.0" prefWidth="100.0" GridPane.columnIndex="2" />
                   <DatePicker fx:id="endDate" maxWidth="500.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                   <Label text="End date" GridPane.columnIndex="1" GridPane.rowIndex="1" />
