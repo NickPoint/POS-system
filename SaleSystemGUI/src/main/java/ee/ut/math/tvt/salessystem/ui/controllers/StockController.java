@@ -9,7 +9,6 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,6 +74,7 @@ public class StockController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        editItemButton.setVisible(false);
         warehouseTableView.setItems(FXCollections.observableList(dao.findStockItems()));
         itemPrice.setCellValueFactory(p -> new ReadOnlyObjectWrapper(String.format("%.2f", p.getValue().getPrice())));
         setButtons(false);
@@ -113,11 +113,11 @@ public class StockController implements Initializable {
                 setButtons(false);
             }
         });
-        anchorPane.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-            if (!editMode) {
-                warehouseTableView.getSelectionModel().clearSelection();
-            }
-        });
+//        anchorPane.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+//            if (!editMode) {
+//                warehouseTableView.getSelectionModel().clearSelection();
+//            }
+//        });
     }
 
     /**
@@ -280,8 +280,8 @@ public class StockController implements Initializable {
     private void setButtons(boolean flag) {
         deleteItemButton.setVisible(flag);
         deleteItemButton.setDisable(!flag);
-        editItemButton.setVisible(flag);
-        editItemButton.setDisable(!flag);
+//        editItemButton.setVisible(flag);
+//        editItemButton.setDisable(!flag);
     }
 
     /**

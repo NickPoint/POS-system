@@ -62,6 +62,8 @@ public class HistoryController implements Initializable {
                 purchaseDetailsTableView.refresh();
             }
         });
+        startDate.setEditable(false);
+        endDate.setEditable(false);
         purchaseSum.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(String.format("%.2f", p.getValue().getSum())));
         itemSum.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(String.format("%.2f", p.getValue().getSum())));
         itemPrice.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(String.format("%.2f", p.getValue().getPrice())));
