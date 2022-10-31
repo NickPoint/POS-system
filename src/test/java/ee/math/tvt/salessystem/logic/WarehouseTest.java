@@ -9,8 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class WarehouseTest {
     private InMemorySalesSystemDAO dao;
@@ -82,10 +81,16 @@ public class WarehouseTest {
         Assert.assertEquals(testStockItem.getQuantity(), stockItem.getQuantity());
     }
 
-    // - check that adding a new item increases the quantit and the saveStockItem method of the DAO is not called
+    // - check that adding a new item increases the quantity and
+    // the saveStockItem method of the DAO is not called, as we have changed some logic of DAO and warehouse,
+    // calling saveStockItem is completely OK
     @Test
     public void testAddingExistingItem() {
-
+        StockItem stockItem1 = new StockItem(30l, "SI", 1.0, 1);
+        warehouse.addNewItem(stockItem1);
+        int expected = dao.findStockItem(stockItem1.getId()).getQuantity() + 1;
+        warehouse.addNewItem(stockItem1);
+        assertEquals(expected, dao.findStockItem(stockItem1.getId()).getQuantity());
     }
 
     //check that adding an item with negative quantity results in an exception
