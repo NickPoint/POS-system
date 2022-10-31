@@ -52,6 +52,9 @@ public class PurchaseController implements Initializable {
     @FXML
     private TableColumn<SoldItem, String> itemPrice;
 
+    @FXML
+    private TableColumn<SoldItem, String> sumPrice;
+
     public PurchaseController(SalesSystemDAO dao, ShoppingCart shoppingCart) {
         this.dao = dao;
         this.shoppingCart = shoppingCart;
@@ -62,7 +65,12 @@ public class PurchaseController implements Initializable {
         cancelPurchase.setDisable(true);
         submitPurchase.setDisable(true);
         purchaseTableView.setItems(FXCollections.observableList(shoppingCart.getAll()));
-        itemPrice.setCellValueFactory(p-> new ReadOnlyObjectWrapper(String.format("%.2f", p.getValue().getPrice())));
+        itemPrice.setCellValueFactory(
+                p -> new ReadOnlyObjectWrapper<>(String.format("%.2f", p.getValue().getPrice()))
+        );
+        sumPrice.setCellValueFactory(
+                p -> new ReadOnlyObjectWrapper<>(String.format("%.2f", p.getValue().getSum()))
+        );
         disableProductField(true);
 
         this.barCodeField.focusedProperty().addListener(new ChangeListener<Boolean>() {
