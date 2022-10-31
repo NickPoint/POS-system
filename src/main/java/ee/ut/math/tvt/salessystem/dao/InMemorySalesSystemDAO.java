@@ -42,14 +42,14 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
         items.add(new StockItem(5L, "Sussy baka", 3.0, 91));
         items.add(new StockItem(6L, "Los pollos hermanos", 80, 1));
         items.add(new StockItem(7L, "Aboltus", 7.0, 1));
-        items.add(new StockItem(8L, "我们爱茶", 3.5, 8));
+        items.add(new StockItem(8L, "我们喜欢茶", 0.0, 8));
         items.add(new StockItem(9L, "Eboldas", 0.0, 1));
         items.add(new StockItem(10L, "Kebab", 6.90, 3));
         items.add(new StockItem(11L, "Noodles", 5.50, 2));
         items.add(new StockItem(12L, "Sirka dish", 11.0, 3));
         items.add(new StockItem(13L, "Lasagne", 5.80, 4));
         items.add(new StockItem(14L, "Mao pao chicken", 6.50, 1));
-        items.add(new StockItem(15L, "我爱咖啡", 12, 4));
+        items.add(new StockItem(15L, "我们喜欢咖啡", 44, 44));
         generateHistory();
     }
 

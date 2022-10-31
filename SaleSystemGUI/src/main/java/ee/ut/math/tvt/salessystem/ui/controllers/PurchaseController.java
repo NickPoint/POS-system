@@ -9,9 +9,12 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,10 +50,16 @@ public class PurchaseController implements Initializable {
     @FXML
     private Button addItemButton;
     @FXML
-    private TableView<SoldItem> purchaseTableView;
+    private Button deleteButton;
+    @FXML
+    private AnchorPane anchorPane;
 
     @FXML
+    private TableView<SoldItem> purchaseTableView;
+    @FXML
     private TableColumn<SoldItem, String> itemPrice;
+
+    private SoldItem selected;
 
     @FXML
     private TableColumn<SoldItem, String> sumPrice;
@@ -65,6 +74,16 @@ public class PurchaseController implements Initializable {
         cancelPurchase.setDisable(true);
         submitPurchase.setDisable(true);
         purchaseTableView.setItems(FXCollections.observableList(shoppingCart.getAll()));
+        itemPrice.setCellValueFactory(p -> new ReadOnlyObjectWrapper(String.format("%.2f", p.getValue().getPrice())));
+        deleteButton.setVisible(false);
+
+        EventHandler<ActionEvent> clearSelection = e -> purchaseTableView.getSelectionModel().clearSelection();
+        barCodeField.setOnAction(clearSelection::handle);
+        nameField.setOnAction(clearSelection::handle);
+        priceField.setOnAction(clearSelection::handle);
+        quantityField.setOnAction(clearSelection::handle);
+
+
         itemPrice.setCellValueFactory(
                 p -> new ReadOnlyObjectWrapper<>(String.format("%.2f", p.getValue().getPrice()))
         );
@@ -72,7 +91,6 @@ public class PurchaseController implements Initializable {
                 p -> new ReadOnlyObjectWrapper<>(String.format("%.2f", p.getValue().getSum()))
         );
         disableProductField(true);
-
         this.barCodeField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue) {
@@ -81,6 +99,14 @@ public class PurchaseController implements Initializable {
                 }
             }
         });
+        purchaseTableView.getSelectionModel().selectedItemProperty().addListener(
+                ($0, $1, selected) -> {
+                    if (selected != null) {
+                        deleteButton.setVisible(true);
+                        this.selected = selected;
+                    }
+                }
+        );
     }
 
     /**
@@ -128,6 +154,7 @@ public class PurchaseController implements Initializable {
     }
 
     // switch UI to the state that allows to proceed with the purchase
+
     private void enableInputs() {
         resetProductField();
         disableProductField(false);
@@ -135,8 +162,8 @@ public class PurchaseController implements Initializable {
         submitPurchase.setDisable(false);
         newPurchase.setDisable(true);
     }
-
     // switch UI to the state that allows to initiate new purchase
+
     private void disableInputs() {
         resetProductField();
         cancelPurchase.setDisable(true);
@@ -197,6 +224,12 @@ public class PurchaseController implements Initializable {
                 alert.showAndWait();
             }
         }
+    }
+
+    @FXML
+    private void deleteButtonClicked() {
+        shoppingCart.deleteFromShoppingCart(selected.getId());
+        purchaseTableView.refresh();
     }
 
     /**

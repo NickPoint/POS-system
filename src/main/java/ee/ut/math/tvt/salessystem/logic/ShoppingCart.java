@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ShoppingCart {
@@ -55,9 +56,26 @@ public class ShoppingCart {
     }
 
     public String deleteFromShoppingCart(Long id) {
-        return items.removeIf(product -> product.getId().equals(id)) ?
-                ("Successfully deleted an item with barcode " + id) :
-                ("The item with barcode " + id + " is not in the cart!");
+        Iterator<SoldItem> iterator = items.iterator();
+        while (iterator.hasNext()) {
+            SoldItem soldItem = iterator.next();
+            if (soldItem.getId().equals(id)) {
+                int existing = 0;
+                StockItem stockItem1 = dao.findStockItem(id);
+                if (stockItem1 != null) {
+                    existing = stockItem1.getQuantity();
+                }
+                StockItem stockItem = new StockItem(
+                        soldItem.getId(), soldItem.getName(),
+                        soldItem.getQuantity(), soldItem.getQuantity() + existing
+                );
+                dao.saveStockItem(stockItem);
+                iterator.remove();
+                return "Successfully deleted an item with barcode " + id;
+            }
+        }
+        System.out.println(2);
+        return "The item with barcode " + id + " is not in the cart!";
     }
 
     public List<SoldItem> getAll() {
