@@ -94,8 +94,6 @@ public class HibernateSalesSystemDAO implements SalesSystemDAO {
         return null;
     }
 
-    //TODO: implement
-    // LPM-135 Nikita Kislõi, delete upon completion
     @Override
     public List<Purchase> getLastTenPurchases() {
         return em.createNativeQuery("SELECT * FROM Purchase ORDER BY date_of_purchase DESC, time_of_purchase DESC LIMIT 10", Purchase.class).getResultList();
