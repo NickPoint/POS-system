@@ -41,8 +41,9 @@ e.g. PurchaseController::submitPurchaseButtonClicked, Logger::debug, Logger::inf
  
 4. This constructor is never used
 
-5. No-arg constructor and TextField(String text) are used
-<Links to the solution>
+5. Two constructors: no-arg constructor and TextField(String text) are used
+
+[Solution](https://bitbucket.org/ZmishenkoxValerijxAlbertovich/lg9-man/commits/tag/homework-4)
 
 ## Homework 5:
 <Links to the solution>
