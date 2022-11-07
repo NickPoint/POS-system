@@ -13,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.persistence.RollbackException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Stream;
@@ -107,7 +108,7 @@ public class StockController implements Initializable {
         });
         warehouseTableView.getSelectionModel().selectedItemProperty().addListener(($0, $1, selected) -> {
             if (selected != null) {
-                selectedItemId = selected.getId();
+                selectedItemId = selected.getBarCode();
                 setButtons(true);
             } else {
                 setButtons(false);
@@ -166,7 +167,7 @@ public class StockController implements Initializable {
      */
     @FXML
     public void refreshButtonClicked() {
-        warehouseTableView.refresh();
+        refresh();
     }
 
     /**
@@ -176,7 +177,7 @@ public class StockController implements Initializable {
     public void onTabOpen() {
         //Somewhat unrelated functionality,
         //yet quite handy to put it here for a slightly better UX
-        warehouseTableView.refresh();
+        refresh();
         if (soldOutIsShown) {
             log.info("Pulling sold-outs");
             log.debug("Warehouse state: " + dao.findStockItems());
@@ -184,7 +185,7 @@ public class StockController implements Initializable {
             String message = String.join(
                     "\n",
                     soldOuts.map(
-                            so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity())
+                            so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getBarCode(), so.getQuantity())
                     ).toArray(String[]::new)
             );
             log.debug("Following sold-outs were detected " + soldOuts);
@@ -206,13 +207,10 @@ public class StockController implements Initializable {
     public void deleteItemButtonClicked() {
         log.info("Deleting product from warehouse");
         log.debug("Product id: " + selectedItemId);
-        if (dao.deleteItem(selectedItemId)) {
-            warehouseTableView.refresh();
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Item was successfully deleted from the warehouse!");
-            alert.setTitle("Success!");
-            alert.showAndWait();
-        }
+        refresh();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(warehouse.deleteFromStock(selectedItemId));
+        alert.showAndWait();
     }
 
     @FXML
@@ -220,7 +218,7 @@ public class StockController implements Initializable {
         editMode = true;
         StockItem stockItem = dao.findStockItem(selectedItemId);
         if (stockItem != null) {
-            barCodeField.setText(String.valueOf(stockItem.getId()));
+            barCodeField.setText(String.valueOf(stockItem.getBarCode()));
             nameField.setText(stockItem.getName());
             quantityField.setText(String.valueOf(stockItem.getQuantity()));
             priceField.setText(String.valueOf(stockItem.getPrice()));
@@ -255,7 +253,7 @@ public class StockController implements Initializable {
 //     * @return
 //     */
 //    private void fillInputsByStockItem(StockItem stockItem) {
-////        barCodeField.setText(String.valueOf(stockItem.getId()));
+////        barCodeField.setText(String.valueOf(stockItem.getBarcode()));
 //        nameField.setText(stockItem.getName());
 //        priceField.setText(String.valueOf(stockItem.getPrice()));
 //        quantityField.setText(String.valueOf(stockItem.getQuantity()));
@@ -292,5 +290,9 @@ public class StockController implements Initializable {
         quantityField.setText("");
         nameField.setText("");
         priceField.setText("");
+    }
+
+    private void refresh() {
+        warehouseTableView.setItems(FXCollections.observableList(dao.findStockItems()));
     }
 }

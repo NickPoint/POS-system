@@ -1,17 +1,18 @@
 package ee.ut.math.tvt.salessystem.ui;
 
 import ee.ut.math.tvt.salessystem.SalesSystemException;
+import ee.ut.math.tvt.salessystem.dao.HibernateSalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
-import ee.ut.math.tvt.salessystem.logic.History;
 import ee.ut.math.tvt.salessystem.logic.ShoppingCart;
 import ee.ut.math.tvt.salessystem.logic.Team;
 import ee.ut.math.tvt.salessystem.logic.Warehouse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,7 +41,6 @@ public class ConsoleUI {
     private final SalesSystemDAO dao;
     private final ShoppingCart cart;
     private final Warehouse warehouse;
-    private final History history;
     private final Team team;
     private List<Purchase> lastWatchedPurchasesList = new ArrayList<>();
 
@@ -48,13 +48,12 @@ public class ConsoleUI {
         this.dao = dao;
         this.cart = new ShoppingCart(dao);
         this.warehouse = new Warehouse(dao);
-        this.history = new History(dao);
         this.team = new Team();
     }
 
     public static void main(String[] args) throws Exception {
         log.info("Starting up the sales system CLI");
-        SalesSystemDAO dao = new InMemorySalesSystemDAO();
+        SalesSystemDAO dao = new HibernateSalesSystemDAO();
         ConsoleUI console = new ConsoleUI(dao);
         console.run();
     }
@@ -80,7 +79,7 @@ public class ConsoleUI {
         List<StockItem> stockItems = dao.findStockItems();
         System.out.println("-------------------------");
         for (StockItem si : stockItems) {
-            System.out.println(si.getId() + " " + si.getName() + " " + si.getPrice() + "Euro (" + si.getQuantity() + " items)");
+            System.out.println(si.getBarCode() + " " + si.getName() + " " + si.getPrice() + "Euro (" + si.getQuantity() + " items)");
         }
         if (stockItems.size() == 0) {
             System.out.println("\tNothing");
@@ -130,7 +129,7 @@ public class ConsoleUI {
         String message = String.join(
                 "\n",
                 soldOuts
-                        .map(so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getId(), so.getQuantity()))
+                        .map(so -> String.format("%s (id: %d, amount: %d)", so.getName(), so.getBarCode(), so.getQuantity()))
                         .toArray(String[]::new));
         if (!message.isBlank()) {
             System.out.println("Nearly sold out items are:");
@@ -161,17 +160,19 @@ public class ConsoleUI {
     }
 
     private void showHistoryBetweenDates(LocalDate firstDate, LocalDate secondDate) {
-        this.lastWatchedPurchasesList = history.getBetweenDates(firstDate, secondDate);
+        this.lastWatchedPurchasesList = dao.getBetweenDates(firstDate, secondDate);
         printPurchaseTable();
     }
 
     private void showLastTenPurchases() {
-        this.lastWatchedPurchasesList = history.getLastTenPurchases();
+//        this.lastWatchedPurchasesList = dao.getLastTenPurchases();
+        //TODO: Delete, used it for setting up the database
+        this.lastWatchedPurchasesList = dao.getPurchases();
         printPurchaseTable();
     }
 
     private void showAllUpToOneYear() {
-        this.lastWatchedPurchasesList = history.getLastYear();
+        this.lastWatchedPurchasesList = dao.getLastYear();
         printPurchaseTable();
     }
 
@@ -179,7 +180,7 @@ public class ConsoleUI {
         int i = 0;
         System.out.println("IDX   Date:       Time:  Total:");
         for (Purchase purchase : lastWatchedPurchasesList) {
-            System.out.printf("%-5d %s  %s  %.2f\n", i++, purchase.getDate(), purchase.getTime(), purchase.getSum());
+            System.out.printf("%-5d %2$tY-%2$tm-%2$td  %3$tH:%3$tM  %4$.2f\n", i++, purchase.getDate(), purchase.getTime(), purchase.getSum());
         }
     }
 
@@ -198,7 +199,7 @@ public class ConsoleUI {
         int priceMaxLen = 3;
         int quantityMaxLen = 6;
         for (SoldItem item : boughtItems) {
-            idMaxLen = Math.max(idMaxLen, numberOfDigits(item.getId()));
+            idMaxLen = Math.max(idMaxLen, numberOfDigits(item.getBarcode()));
             nameMaxLen = Math.max(nameMaxLen, item.getName().length());
             priceMaxLen = Math.max(priceMaxLen, numberOfDigits(item.getPrice()));
             quantityMaxLen = Math.max(quantityMaxLen, numberOfDigits(item.getQuantity()));
@@ -209,7 +210,7 @@ public class ConsoleUI {
         System.out.printf(fHeader, "Barcode", "Name", "Price", "Amount", "Sum");
         for (SoldItem item : boughtItems) {
             System.out.printf(fRow,
-                    item.getId(), item.getName(), item.getPrice(),
+                    item.getBarcode(), item.getName(), item.getPrice(),
                     item.getQuantity(), item.getSum()
             );
         }
@@ -222,11 +223,7 @@ public class ConsoleUI {
 
     private void deleteFromWarehouse(Long idx) {
         log.debug("Received following index: " + idx);
-        if (warehouse.deleteFromStock(idx))
-            System.out.println("Item with index " + idx + " is removed from the warehouse");
-        else {
-            System.out.println("Item with index " + idx + " is not in the warehouse!");
-        }
+        System.out.println(warehouse.deleteFromStock(idx));
     }
 
     private void printUsage() {

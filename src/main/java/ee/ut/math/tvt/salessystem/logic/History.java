@@ -1,5 +1,4 @@
 package ee.ut.math.tvt.salessystem.logic;
-
 import ee.ut.math.tvt.salessystem.SalesSystemException;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
@@ -13,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
+@Deprecated
 public class History {
     private final SalesSystemDAO dao;
 

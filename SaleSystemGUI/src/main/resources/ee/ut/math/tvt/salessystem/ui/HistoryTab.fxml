@@ -69,7 +69,7 @@
                           <columns>
                               <TableColumn prefWidth="75.0" text="Id">
                                   <cellValueFactory>
-                                      <PropertyValueFactory property="id" />
+                                      <PropertyValueFactory property="barcode" />
                                   </cellValueFactory>
                               </TableColumn>
                             <TableColumn prefWidth="75.0" text="Name">

@@ -9,6 +9,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -74,9 +75,8 @@ public class PurchaseController implements Initializable {
         cancelPurchase.setDisable(true);
         submitPurchase.setDisable(true);
         purchaseTableView.setItems(FXCollections.observableList(shoppingCart.getAll()));
-        itemPrice.setCellValueFactory(p -> new ReadOnlyObjectWrapper(String.format("%.2f", p.getValue().getPrice())));
+        itemPrice.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(String.format("%.2f", p.getValue().getPrice())));
         deleteButton.setVisible(false);
-
         EventHandler<ActionEvent> clearSelection = e -> purchaseTableView.getSelectionModel().clearSelection();
         barCodeField.setOnAction(clearSelection::handle);
         nameField.setOnAction(clearSelection::handle);
@@ -228,7 +228,7 @@ public class PurchaseController implements Initializable {
 
     @FXML
     private void deleteButtonClicked() {
-        shoppingCart.deleteFromShoppingCart(selected.getId());
+        shoppingCart.deleteFromShoppingCart(selected.getBarcode());
         purchaseTableView.refresh();
     }
 

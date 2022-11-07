@@ -47,7 +47,7 @@
                     <columns>
                       <TableColumn text="Id">
                         <cellValueFactory>
-                          <PropertyValueFactory property="id" />
+                          <PropertyValueFactory property="barCode" />
                         </cellValueFactory>
                       </TableColumn>
                       <TableColumn text="Name">

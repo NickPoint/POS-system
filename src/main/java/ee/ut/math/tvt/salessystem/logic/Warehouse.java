@@ -6,6 +6,7 @@ import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.persistence.RollbackException;
 import java.util.stream.Stream;
 
 public class Warehouse {
@@ -21,9 +22,12 @@ public class Warehouse {
         this.dao = dao;
     }
 
-
     /**
-     * Resupply existing {@code StockItem} by index
+     * Resupply existing {@code StockItem} by barcode
+     *
+     * @param idx      barcode of the product
+     * @param quantity quantity of the product to be added
+     * @throws ProductValidationException if {@param quantity} is negative or transaction fails
      */
     public void addByIdx(long idx, int quantity) throws ProductValidationException {
         log.debug("Adding by index: " + idx + ", quantity: " + quantity);
@@ -36,13 +40,12 @@ public class Warehouse {
             log.debug("Quantity in the database: " + stockItem.getQuantity());
             stockItem.setQuantity(stockItem.getQuantity() + quantity);
             log.debug("New quantity: " + stockItem.getQuantity());
-            dao.saveStockItem(stockItem);
             dao.commitTransaction();
             log.info("The product is resupplied in the warehouse");
-        } catch (ProductValidationException e) {
+        } catch (ProductValidationException | RollbackException e) {
             dao.rollbackTransaction();
             log.error(e.getMessage());
-            throw e;
+            throw new ProductValidationException(e.getMessage());
         }
     }
 
@@ -63,49 +66,51 @@ public class Warehouse {
                 throw new ProductValidationException("Product name cannot be blank!");
             }
             log.debug("Validation is passed, checking for item with teh same barcode in database");
-            StockItem stockItem = dao.findStockItem(item.getId());
+            StockItem stockItem = dao.findStockItem(item.getBarCode());
             //TODO probably separate
             if (stockItem != null) {
                 log.debug("The item with the same barcode is found: " + stockItem);
-                if (!stockItem.getName().equals(item.getName()) ||
-                        stockItem.getPrice() != item.getPrice()
-                    //TODO: Ask
-//                    || !stockItem.getDescription().equals(item.getDescription())
-                ) {
+                if (!(stockItem.getName().equals(item.getName()) && stockItem.getPrice() == item.getPrice())) {
                     log.error("Fields of item in database and item added by the same barcode do not match!");
-                    throw new ProductValidationException("Product with given ID already exists in the system, yet other fields do not match!");
+                    throw new ProductValidationException(
+                            "Product with given ID already exists in the system, yet other fields do not match!"
+                    );
                 }
                 log.info("The product already existed in the database! Updating quantity:");
                 log.debug("Quantity in the database: " + stockItem.getQuantity());
                 stockItem.setQuantity(stockItem.getQuantity() + item.getQuantity());
                 log.debug("New quantity: " + stockItem.getQuantity());
-                dao.saveStockItem(stockItem);
                 log.info("Product is resupplied in the warehouse");
             } else {
                 dao.saveStockItem(item);
                 log.info("New product is added to the database");
             }
             dao.commitTransaction();
-        } catch (ProductValidationException e) {
+        } catch (ProductValidationException | RollbackException e) {
             dao.rollbackTransaction();
             log.error(e.getMessage());
-            throw e;
+            throw new ProductValidationException(e.getMessage());
         }
     }
 
-    /**
-     *  CLI -> if product with given id is not in stock notify the user
-     * @param id id of stockItem to be deleted
-     */
-    //TODO: Should we use it for the sake of separation of business logic, right here it seems pointless
-    public boolean deleteFromStock(Long id){
-        return dao.deleteItem(id);
+
+    public String deleteFromStock(long id) {
+        dao.beginTransaction();
+        try {
+            boolean b = dao.deleteItem(id);
+            dao.commitTransaction();
+            return "Item with index " + id + (b ? " is removed from the warehouse." : " is not in the warehouse!");
+        } catch (RollbackException e) {
+            log.error("Failed to remove item, transaction failed");
+            log.error(e.getMessage());
+            dao.rollbackTransaction();
+        }
+        return "Failed to remove an item from the warehouse!";
     }
 
-
+    //TODO: Migrate to JPQL and cache the result
     public Stream<StockItem> getSoldOuts() {
-        return dao
-                .findStockItems()
+        return dao.findStockItems()
                 .stream()
                 .filter(i -> i.getQuantity() < SOLD_OUT_MEASURE);
     }

@@ -6,11 +6,10 @@ import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 import ee.ut.math.tvt.salessystem.logic.Warehouse;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
+//TODO: Investigate additional test suites we may need
 public class WarehouseTest {
     private InMemorySalesSystemDAO dao;
     private Warehouse warehouse;
@@ -69,13 +68,14 @@ public class WarehouseTest {
     }
 
     // - check that a new item is saved through the DAO
+
     @Test
     public void testAddingNewItem() {
         StockItem stockItem = new StockItem(1L, "Coca-Cola", 20.5, 3);
         warehouse.addNewItem(stockItem);
         StockItem testStockItem;
-        Assert.assertNotNull(testStockItem = dao.findStockItem(stockItem.getId()));
-        Assert.assertEquals(testStockItem.getId(), stockItem.getId());
+        Assert.assertNotNull(testStockItem = dao.findStockItem(stockItem.getBarCode()));
+        Assert.assertEquals(testStockItem.getBarCode(), stockItem.getBarCode());
         Assert.assertEquals(testStockItem.getName(), stockItem.getName());
         Assert.assertEquals(testStockItem.getPrice(), stockItem.getPrice(), 0.001);
         Assert.assertEquals(testStockItem.getQuantity(), stockItem.getQuantity());
@@ -84,13 +84,15 @@ public class WarehouseTest {
     // - check that adding a new item increases the quantity and
     // the saveStockItem method of the DAO is not called, as we have changed some logic of DAO and warehouse,
     // calling saveStockItem is completely OK
+    //TODO:
+    // LPM-133, Nikita Kislõi, update test
     @Test
     public void testAddingExistingItem() {
         StockItem stockItem1 = new StockItem(30l, "SI", 1.0, 1);
         warehouse.addNewItem(stockItem1);
-        int expected = dao.findStockItem(stockItem1.getId()).getQuantity() + 1;
+        int expected = dao.findStockItem(stockItem1.getBarCode()).getQuantity() + 1;
         warehouse.addNewItem(stockItem1);
-        assertEquals(expected, dao.findStockItem(stockItem1.getId()).getQuantity());
+        assertEquals(expected, dao.findStockItem(stockItem1.getBarCode()).getQuantity());
     }
 
     //check that adding an item with negative quantity results in an exception
