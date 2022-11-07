@@ -1,36 +1,30 @@
 package ee.ut.math.tvt.salessystem.dataobjects;
 
+import javax.persistence.*;
+
+//TODO change toString method
 /**
  * Stock item.
  */
+@Entity
+@Table(name = "STOCK_ITEM")
 public class StockItem {
-
-    private Long id;
+    @Id
+    private long barCode;
     private String name;
-//    private String description;
     private double price;
     private int quantity;
 
     public StockItem() {
 
     }
-    public StockItem(Long id, String name,
-//                     String description,
-                     double price, int quantity) {
-        this.id = id;
+
+    public StockItem(long barCode, String name, double price, int quantity) {
+        this.barCode = barCode;
         this.name = name;
-//        this.description = description;
         this.price = price;
         this.quantity = quantity;
     }
-
-//    public String getDescription() {
-//        return description;
-//    }
-//
-//    public void setDescription(String description) {
-//        this.description = description;
-//    }
 
     public String getName() {
         return name;
@@ -48,12 +42,12 @@ public class StockItem {
         this.price = price;
     }
 
-    public Long getId() {
-        return id;
+    public long getBarCode() {
+        return barCode;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setBarCode(long barCode) {
+        this.barCode = barCode;
     }
 
     public int getQuantity() {
@@ -66,6 +60,6 @@ public class StockItem {
 
     @Override
     public String toString() {
-        return String.format("StockItem{id=%d, name='%s'}", id, name);
+        return String.format("StockItem{barCode=%d, name='%s'}", barCode, name);
     }
 }
