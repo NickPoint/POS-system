@@ -2,7 +2,6 @@ package ee.ut.math.tvt.salessystem.ui;
 
 import ee.ut.math.tvt.salessystem.SalesSystemException;
 import ee.ut.math.tvt.salessystem.dao.HibernateSalesSystemDAO;
-import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
@@ -167,7 +166,7 @@ public class ConsoleUI {
     private void showLastTenPurchases() {
 //        this.lastWatchedPurchasesList = dao.getLastTenPurchases();
         //TODO: Delete, used it for setting up the database
-        this.lastWatchedPurchasesList = dao.getPurchases();
+        this.lastWatchedPurchasesList = dao.getLastTenPurchases();
         printPurchaseTable();
     }
 
