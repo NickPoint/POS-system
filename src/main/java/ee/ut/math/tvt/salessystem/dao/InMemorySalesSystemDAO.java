@@ -1,21 +1,22 @@
 package ee.ut.math.tvt.salessystem.dao;
 
+import ee.ut.math.tvt.salessystem.SalesSystemException;
 import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class InMemorySalesSystemDAO implements SalesSystemDAO {
 
     private final List<StockItem> stockItemList;
-    private final List<SoldItem> soldItemList;
     private final List<Purchase> purchaseList;
 
     public InMemorySalesSystemDAO() {
@@ -33,71 +34,15 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
 ////                "Student's delight",
 //                0.0, 100));
         this.stockItemList = items;
-        this.soldItemList = new ArrayList<>();
         this.purchaseList = new ArrayList<>();
-        items.add(new StockItem(1L, "Lays chips", 11.0, 5));
-        items.add(new StockItem(2L, "Chupa-chups", 8.0, 8));
-        items.add(new StockItem(3L, "Frankfurters", 15.0, 12));
-        items.add(new StockItem(4L, "Free Beer", 0.0, 100));
-        items.add(new StockItem(5L, "Sussy baka", 3.0, 91));
-        items.add(new StockItem(6L, "Los pollos hermanos", 80, 1));
-        items.add(new StockItem(7L, "Aboltus", 7.0, 1));
-        items.add(new StockItem(8L, "我们喜欢茶", 0.0, 8));
-        items.add(new StockItem(9L, "Eboldas", 0.0, 1));
-        items.add(new StockItem(10L, "Kebab", 6.90, 3));
-        items.add(new StockItem(11L, "Noodles", 5.50, 2));
-        items.add(new StockItem(12L, "Sirka dish", 11.0, 3));
-        items.add(new StockItem(13L, "Lasagne", 5.80, 4));
-        items.add(new StockItem(14L, "Mao pao chicken", 6.50, 1));
-        items.add(new StockItem(15L, "我们喜欢咖啡", 44, 44));
-        generateHistory();
+        DataUtils.populateDAO(this);
     }
 
 
-    private void generateHistory() {
-        int currentYear = LocalDate.now().getYear();
-        //Majority is more than a year old
-        generateHistory(currentYear, 3, 1, 12);
-        //Majority is up to a year old
-        generateHistory(currentYear, 1, 0, 7);
+    @Override
+    public void savePurchase(Purchase purchase) {
+        purchaseList.add(purchase);
     }
-
-    /**
-     * Generate dummy purchase history
-     *
-     * @param year   a year around which we build an interval
-     * @param deltaS defines start of the date interval
-     * @param deltaE defines end of the date interval
-     * @param n      number of purchases to add
-     */
-    private void generateHistory(int year, int deltaS, int deltaE, int n) {
-        var current = ThreadLocalRandom.current();
-        for (int i = 0; i < n; i++) {
-            var date = LocalDate.of(
-                    current.nextInt(year - deltaS, year - deltaE + 1),
-                    current.nextInt(1, 13),
-                    current.nextInt(1, 29)
-            );
-            var time = LocalTime.of(
-                    current.nextInt(0, 24),
-                    current.nextInt(0, 60)
-            );
-            Map<Long, SoldItem> purchase = new HashMap<>();
-            int numberOfProducts = current.nextInt(1, 15);
-            for (int j = 0; j < numberOfProducts; j++) {
-                int choice = current.nextInt(0, stockItemList.size());
-                Long id = stockItemList.get(choice).getId();
-                int quantity = current.nextInt(1, 33);
-                purchase.putIfAbsent(id, new SoldItem(stockItemList.get(choice), quantity));
-                purchase.computeIfPresent(id, (key, oldItem) -> {
-                    oldItem.setQuantity(oldItem.getQuantity() + quantity);
-                    return oldItem;
-                });
-            }
-            purchaseList.add(new Purchase(new ArrayList<>(purchase.values()), time, date));
-        }
-    }
-
 
     @Override
     public List<StockItem> findStockItems() {
@@ -107,37 +52,14 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
     @Override
     public StockItem findStockItem(long id) {
         for (StockItem item : stockItemList) {
-            if (item.getId() == id)
+            if (item.getBarCode() == id)
                 return item;
         }
         return null;
     }
 
     @Override
-    public void saveSoldItem(SoldItem item) {
-//        for (int i = 0; i < stockItemList.size(); i++) {
-//            if(stockItemList.get(i).getId().equals(item.getId())){
-//                stockItemList.get(i).setQuantity(stockItemList.get(i).getQuantity()-item.getQuantity());
-//                break;
-//            }
-//        }
-        soldItemList.add(item);
-    }
-
-
-    public void finalisePurchase() {
-        purchaseList.add(new Purchase(soldItemList, LocalTime.now(), LocalDate.now()));
-        soldItemList.clear();
-    }
-
-    @Override
     public void saveStockItem(StockItem stockItem) {
-        for (int i = 0; i < stockItemList.size(); i++) {
-            if (stockItemList.get(i).getId().equals(stockItem.getId())) {
-                stockItemList.set(i, stockItem);
-                return;
-            }
-        }
         stockItemList.add(stockItem);
     }
 
@@ -151,17 +73,63 @@ public class InMemorySalesSystemDAO implements SalesSystemDAO {
     }
 
     @Override
-    public void rollbackTransaction() {
-        soldItemList.clear();
-    }
+    public void rollbackTransaction() {}
 
     @Override
     public void commitTransaction() {
     }
 
     @Override
-    public boolean deleteItem(Long id) {
-        return stockItemList.removeIf(stockItem -> stockItem.getId().equals(id));
+    public boolean deleteItem(long id) {
+        return stockItemList.removeIf(stockItem -> stockItem.getBarCode() == id);
+    }
+
+    /**
+     * @return List of the last 10 purchases made
+     */
+    @Override
+    public List<Purchase> getLastTenPurchases() {
+        List<Purchase> purchases = this.getPurchases();
+        //Temporary measure, using SQL filtering and querying should yield better performance
+        purchases.sort(Comparator.comparing((Purchase purchase) -> LocalDateTime.of(purchase.getDate(), purchase.getTime())));
+        return purchases.subList(Math.max(purchases.size() - 10, 0), purchases.size());
+    }
+
+
+    /**
+     * @param start date after which we
+     * @param end   date before which
+     * @return list of purchases between two given dates
+     * @throws SalesSystemException exception is thrown if end date comes before start date
+     */
+    @Override
+    public List<Purchase> getBetweenDates(LocalDate start, LocalDate end) {
+        if (start.isAfter(end)) {
+            throw new SalesSystemException("Start date is Before the end date!");
+        }
+        Predicate<LocalDate> isBetween = date -> date.isAfter(start) && date.isBefore(end);
+        return getWithPredicate(purchase -> isBetween.test(purchase.getDate()));
+    }
+
+    /**
+     * @return list of purchases up to one year old
+     */
+    @Override
+    public List<Purchase> getLastYear() {
+        LocalDate aYearAgo = LocalDate.now().minusYears(1L);
+        return getWithPredicate(purchase -> purchase.getDate().isAfter(aYearAgo));
+    }
+
+    /**
+     * @param p predicate based on which Purchases are filtered
+     * @return list of products matching the predicate
+     */
+
+    private List<Purchase> getWithPredicate(Predicate<Purchase> p) {
+        return this.getPurchases()
+                .stream()
+                .filter(p::test)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
 }

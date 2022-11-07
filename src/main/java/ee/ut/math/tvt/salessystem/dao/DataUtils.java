@@ -1,7 +1,11 @@
 package ee.ut.math.tvt.salessystem.dao;
+
 import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -9,23 +13,49 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
 
-public class Utils {
+public class DataUtils {
+    private static final Logger log = LogManager.getLogger(DataUtils.class);
 
     /**
-     *
      * @param dao
      */
-    public static void populateDAO(SalesSystemDAO dao){
-        populateWarehouse(dao);
+    public static void populateDAO(SalesSystemDAO dao) {
+        log.info("Populating warehouse");
+        log.debug("Current warehouse content: ");
+        log.debug(dao.findStockItems());
+        transactionWrapper(dao, DataUtils::populateWarehouse);
+        log.info("Warehouse is filled");
+        log.debug("Warehouse content after operation: ");
+        log.debug(dao.findStockItems());
+        log.info("Populating purchase history");
+        dao.beginTransaction();
         populateHistory(dao);
+        dao.commitTransaction();
+        log.info("Purchase history is filled");
+        log.debug("History state after operation");
+        log.debug(dao.getPurchases());
     }
 
+    private static void transactionWrapper(SalesSystemDAO dao, Consumer<SalesSystemDAO> procedure) {
+        dao.beginTransaction();
+        try {
+            procedure.accept(dao);
+            dao.commitTransaction();
+        } catch (Exception e) {
+            log.error("Failed to populate Point-Of-Sale system");
+            log.error(e.getMessage());
+            dao.rollbackTransaction();
+            System.exit(1);
+        }
+    }
+
+
     /**
-     *
      * @param dao
      */
-    private static void populateWarehouse(SalesSystemDAO dao){
+    private static void populateWarehouse(SalesSystemDAO dao) {
         dao.saveStockItem(new StockItem(1L, "Lays chips", 11.0, 5));
         dao.saveStockItem(new StockItem(2L, "Chupa-chups", 8.0, 8));
         dao.saveStockItem(new StockItem(3L, "Frankfurters", 15.0, 12));
@@ -43,15 +73,16 @@ public class Utils {
         dao.saveStockItem(new StockItem(15L, "我们喜欢咖啡", 44, 44));
     }
 
+
     /**
-     *
      * @param dao
      */
-    private static void populateHistory(SalesSystemDAO dao){
+    private static void populateHistory(SalesSystemDAO dao) {
         int currentYear = LocalDate.now().getYear();
-        //Majority is more than a year old
+        log.debug("Current year: " + currentYear);
+        log.info("Populating purchase history where majority of purchases is more than a year old");
         generateHistory(dao, currentYear, 3, 1, 12);
-        //Majority is up to a year old
+        log.info("Populating purchase history where majority of purchases is up to a year old");
         generateHistory(dao, currentYear, 1, 0, 7);
     }
 
@@ -80,7 +111,7 @@ public class Utils {
             int numberOfProducts = current.nextInt(1, 15);
             for (int j = 0; j < numberOfProducts; j++) {
                 int choice = current.nextInt(0, stockItemList.size());
-                Long id = stockItemList.get(choice).getId();
+                Long id = stockItemList.get(choice).getBarCode();
                 int quantity = current.nextInt(1, 33);
                 purchase.putIfAbsent(id, new SoldItem(stockItemList.get(choice), quantity));
                 purchase.computeIfPresent(id, (key, oldItem) -> {
@@ -88,7 +119,9 @@ public class Utils {
                     return oldItem;
                 });
             }
-            dao.savePurchase(new Purchase(new ArrayList<>(purchase.values()), time, date));
+            Purchase pur = new Purchase(new ArrayList<>(purchase.values()), time, date);
+            purchase.values().forEach(item -> item.setPurchase(pur));
+            dao.savePurchase(pur);
         }
     }
 

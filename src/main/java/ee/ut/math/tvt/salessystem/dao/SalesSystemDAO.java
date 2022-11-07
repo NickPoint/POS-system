@@ -4,6 +4,7 @@ import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -27,7 +28,10 @@ import java.util.List;
  * start using a real database. Transactions allow you to group database operations
  * so that either all of them succeed or nothing at all is done.
  */
+//https://stackoverflow.com/q/974596
 public interface SalesSystemDAO {
+    void saveStockItem(StockItem stockItem);
+
 
     List<StockItem> findStockItems();
 
@@ -35,12 +39,9 @@ public interface SalesSystemDAO {
 
     StockItem findStockItem(long id);
 
-    void saveStockItem(StockItem stockItem);
 
-    //https://stackoverflow.com/q/974596
-    void saveSoldItem(SoldItem item);
 
-    void finalisePurchase();
+    void savePurchase(Purchase purchase);
 
     void beginTransaction();
 
@@ -48,5 +49,12 @@ public interface SalesSystemDAO {
 
     void commitTransaction();
 
-    boolean deleteItem(Long id);
+    boolean deleteItem(long id);
+
+    List<Purchase> getLastTenPurchases();
+
+    List<Purchase> getBetweenDates(LocalDate start, LocalDate end);
+
+    List<Purchase> getLastYear();
+
 }

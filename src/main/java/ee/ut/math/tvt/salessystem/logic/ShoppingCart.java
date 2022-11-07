@@ -2,11 +2,14 @@ package ee.ut.math.tvt.salessystem.logic;
 
 import ee.ut.math.tvt.salessystem.SalesSystemException;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
+import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +33,7 @@ public class ShoppingCart {
             if (item.getQuantity() < 0) {
                 throw new SalesSystemException("Product quantity cannot be negative!");
             }
-            StockItem stockItem = dao.findStockItem(item.getId());
+            StockItem stockItem = dao.findStockItem(item.getBarcode());
             //The product we add is not yet in shopping cart, we add it now, but first we need to check the quantity
             if (item.getQuantity() > stockItem.getQuantity()) {
                 throw new SalesSystemException("You cannot add more items than in stock!");
@@ -40,7 +43,7 @@ public class ShoppingCart {
             stockItem.setQuantity(stockItem.getQuantity() - item.getQuantity());
             //Look for item in the items already added to shopping cart
             for (int i = 0; i < items.size(); i++) {
-                if (items.get(i).getId() == item.getId()) {
+                if (items.get(i).getBarcode() == item.getBarcode()) {
                     //Update quantity of the item
                     items.get(i).setQuantity(items.get(i).getQuantity() + item.getQuantity());
                     log.debug("Updated stock of item" + item.getName() + "in the cart, new quantity: " + item.getQuantity());
@@ -55,18 +58,20 @@ public class ShoppingCart {
         }
     }
 
+
+    //Change
     public String deleteFromShoppingCart(Long id) {
         Iterator<SoldItem> iterator = items.iterator();
         while (iterator.hasNext()) {
             SoldItem soldItem = iterator.next();
-            if (soldItem.getId().equals(id)) {
+            if (soldItem.getBarcode() == id) {
                 int existing = 0;
                 StockItem stockItem1 = dao.findStockItem(id);
                 if (stockItem1 != null) {
                     existing = stockItem1.getQuantity();
                 }
                 StockItem stockItem = new StockItem(
-                        soldItem.getId(), soldItem.getName(),
+                        soldItem.getBarcode(), soldItem.getName(),
                         soldItem.getQuantity(), soldItem.getQuantity() + existing
                 );
                 dao.saveStockItem(stockItem);
@@ -79,14 +84,12 @@ public class ShoppingCart {
     }
 
     public List<SoldItem> getAll() {
-        //TODO: Defensive copying???
         return items;
     }
 
     public void cancelCurrentPurchase() {
-        items.forEach(soldItem ->
-        {
-            StockItem stockItem = dao.findStockItem(soldItem.getId());
+        items.forEach(soldItem -> {
+            StockItem stockItem = dao.findStockItem(soldItem.getBarcode());
             stockItem.setQuantity(stockItem.getQuantity() + soldItem.getQuantity());
             dao.saveStockItem(stockItem);
         });
@@ -96,8 +99,12 @@ public class ShoppingCart {
     public void submitCurrentPurchase() {
         dao.beginTransaction();
         try {
-            items.forEach(dao::saveSoldItem);
-            dao.finalisePurchase();
+
+//            items.forEach(dao::saveSoldItem);
+            Purchase purchase = new Purchase(new ArrayList<>(items), LocalTime.now(), LocalDate.now());
+            items.forEach(item -> item.setPurchase(purchase));
+            dao.savePurchase(purchase);
+
             dao.commitTransaction();
             items.clear();
             log.info("Purchase is saved");
