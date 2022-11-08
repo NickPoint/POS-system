@@ -60,7 +60,7 @@ public class ShoppingCart {
 
 
     //Change
-    public String deleteFromShoppingCart(Long id) {
+    public String deleteFromShoppingCart(long id) {
         Iterator<SoldItem> iterator = items.iterator();
         while (iterator.hasNext()) {
             SoldItem soldItem = iterator.next();
@@ -68,18 +68,19 @@ public class ShoppingCart {
                 int existing = 0;
                 StockItem stockItem1 = dao.findStockItem(id);
                 if (stockItem1 != null) {
-                    existing = stockItem1.getQuantity();
-                }
-                StockItem stockItem = new StockItem(
-                        soldItem.getBarcode(), soldItem.getName(),
-                        soldItem.getQuantity(), soldItem.getQuantity() + existing
-                );
-                dao.saveStockItem(stockItem);
+                    stockItem1.setQuantity(
+                            soldItem.getQuantity()+stockItem1.getQuantity()
+                    );
+                }//TODO what should we do about deleted products, forget about them?
+//                StockItem stockItem = new StockItem(
+//                        soldItem.getBarcode(), soldItem.getName(),
+//                        soldItem.getQuantity(), soldItem.getQuantity() + existing
+//                );
+//                dao.saveStockItem(stockItem);
                 iterator.remove();
                 return "Successfully deleted an item with barcode " + id;
             }
         }
-        System.out.println(2);
         return "The item with barcode " + id + " is not in the cart!";
     }
 
@@ -90,8 +91,10 @@ public class ShoppingCart {
     public void cancelCurrentPurchase() {
         items.forEach(soldItem -> {
             StockItem stockItem = dao.findStockItem(soldItem.getBarcode());
-            stockItem.setQuantity(stockItem.getQuantity() + soldItem.getQuantity());
-            dao.saveStockItem(stockItem);
+            if (stockItem != null) {
+                stockItem.setQuantity(stockItem.getQuantity() + soldItem.getQuantity());
+                dao.saveStockItem(stockItem);
+            }//TODO what should we do about deleted products, forget about them?
         });
         items.clear();
     }
@@ -99,8 +102,6 @@ public class ShoppingCart {
     public void submitCurrentPurchase() {
         dao.beginTransaction();
         try {
-
-//            items.forEach(dao::saveSoldItem);
             Purchase purchase = new Purchase(new ArrayList<>(items), LocalTime.now(), LocalDate.now());
             items.forEach(item -> item.setPurchase(purchase));
             dao.savePurchase(purchase);
