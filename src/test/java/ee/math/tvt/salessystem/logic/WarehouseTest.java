@@ -16,6 +16,7 @@ public class WarehouseTest {
     private static boolean invokedFirst;
     private static boolean invokedSecond;
     private static int counter = 0;
+    private static boolean called = false;
 
     @Before
     public void setUp(){
@@ -51,6 +52,12 @@ public class WarehouseTest {
             invokedSecond = invokedFirst;
             super.commitTransaction();
         }
+
+        @Override
+        public void saveStockItem(StockItem stockItem) {
+            called = true;
+            super.saveStockItem(stockItem);
+        }
     }
 
     // - check that methods beginTransaction and commitTransaction are both called exactly once and
@@ -82,17 +89,16 @@ public class WarehouseTest {
     }
 
     // - check that adding a new item increases the quantity and
-    // the saveStockItem method of the DAO is not called, as we have changed some logic of DAO and warehouse,
-    // calling saveStockItem is completely OK
-    //TODO:
-    // LPM-133, Nikita Kislõi, update test
+    // the saveStockItem method of the DAO is not called
     @Test
     public void testAddingExistingItem() {
         StockItem stockItem1 = new StockItem(30l, "SI", 1.0, 1);
         warehouse.addNewItem(stockItem1);
+        called = false;
         int expected = dao.findStockItem(stockItem1.getBarCode()).getQuantity() + 1;
         warehouse.addNewItem(stockItem1);
         assertEquals(expected, dao.findStockItem(stockItem1.getBarCode()).getQuantity());
+        assertFalse("Method was called", called);
     }
 
     //check that adding an item with negative quantity results in an exception

@@ -2,7 +2,6 @@ package ee.ut.math.tvt.salessystem.ui;
 
 import ee.ut.math.tvt.salessystem.SalesSystemException;
 import ee.ut.math.tvt.salessystem.dao.HibernateSalesSystemDAO;
-import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
@@ -16,11 +15,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -167,7 +165,7 @@ public class ConsoleUI {
     private void showLastTenPurchases() {
 //        this.lastWatchedPurchasesList = dao.getLastTenPurchases();
         //TODO: Delete, used it for setting up the database
-        this.lastWatchedPurchasesList = dao.getPurchases();
+        this.lastWatchedPurchasesList = dao.getLastTenPurchases();
         printPurchaseTable();
     }
 
@@ -268,7 +266,7 @@ public class ConsoleUI {
                 LocalDate firstDate = LocalDate.parse(c[1]);
                 LocalDate secondDate = LocalDate.parse(c[2]);
                 showHistoryBetweenDates(firstDate, secondDate);
-            } catch (SalesSystemException | NumberFormatException e) {
+            } catch (SalesSystemException | DateTimeParseException e) {
                 log.error(e.getMessage());
             }
         } else if (c[0].equals("i") && c.length == 2) {
