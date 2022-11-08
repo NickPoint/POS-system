@@ -43,6 +43,8 @@ public class HistoryController implements Initializable {
     @FXML
     private TableView<SoldItem> purchaseDetailsTableView;
     @FXML
+    private TableColumn<Purchase, String> timeColumn;
+    @FXML
     private TableColumn<Purchase, String> purchaseSum;
     @FXML
     private TableColumn<SoldItem, String> itemSum;
@@ -64,6 +66,7 @@ public class HistoryController implements Initializable {
         });
         startDate.setEditable(false);
         endDate.setEditable(false);
+        timeColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(String.format("%1$tH:%1$tM", p.getValue().getTime())));
         purchaseSum.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(String.format("%.2f", p.getValue().getSum())));
         itemSum.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(String.format("%.2f", p.getValue().getSum())));
         itemPrice.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(String.format("%.2f", p.getValue().getPrice())));
