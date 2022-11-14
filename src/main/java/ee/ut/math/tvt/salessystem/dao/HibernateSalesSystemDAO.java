@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public class HibernateSalesSystemDAO implements SalesSystemDAO {
@@ -84,15 +85,16 @@ public class HibernateSalesSystemDAO implements SalesSystemDAO {
                 .getResultList();
     }
 
-    //TODO: implement
-    // LPM-136 Mykyta Voeivudskyi, delete upon completion
     @Override
     public List<Purchase> getLastYear() {
-        return null;
+        LocalDate lastYearPurchases = LocalDate.now().minusYears(1);
+        return em.createQuery("FROM Purchase p where p.date BETWEEN LocalDate.now() AND lastYearPurchases:", Purchase.class).getResultList();
     }
 
     @Override
     public List<Purchase> getLastTenPurchases() {
         return em.createNativeQuery("SELECT * FROM Purchase ORDER BY date_of_purchase DESC, time_of_purchase DESC LIMIT 10", Purchase.class).getResultList();
     }
+
+
 }
