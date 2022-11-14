@@ -10,7 +10,7 @@
     </Appenders>
     <Loggers>
         <logger name="org.hibernate">
-            <level value="trace"/>
+            <level value="off"/>
             <appender-ref ref="File"/>
         </logger>
         <Root level="debug">

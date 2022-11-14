@@ -146,6 +146,7 @@ public class StockController implements Initializable {
                         price, amount));
             }
             emptyForm();
+            refresh();
             log.info("Product is added to the warehouse");
             log.debug("Contents of warehouse " + dao.findStockItems());
         } catch (SalesSystemException | NumberFormatException e) {
@@ -293,6 +294,6 @@ public class StockController implements Initializable {
     }
 
     private void refresh() {
-        warehouseTableView.setItems(FXCollections.observableList(dao.findStockItems()));
+        warehouseTableView.getItems().setAll(dao.findStockItems());
     }
 }
