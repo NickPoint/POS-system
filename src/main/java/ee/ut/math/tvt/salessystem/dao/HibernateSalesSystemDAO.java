@@ -2,7 +2,6 @@ package ee.ut.math.tvt.salessystem.dao;
 
 
 import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
-import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
 import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 
 import javax.persistence.EntityManager;
@@ -21,7 +20,6 @@ public class HibernateSalesSystemDAO implements SalesSystemDAO {
         DataUtils.populateDAO(this);
     }
 
-    // TODO implement missing methods
     public void close() {
         em.close();
         emf.close();
@@ -77,7 +75,6 @@ public class HibernateSalesSystemDAO implements SalesSystemDAO {
         em.remove(stockItem);
         return true;
     }
-
 
     @Override
     public List<Purchase> getBetweenDates(LocalDate startDate, LocalDate endDate) {

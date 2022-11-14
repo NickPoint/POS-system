@@ -19,7 +19,7 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
                       value="jdbc:hsqldb:hsql://localhost/pos"/>
             <!-- configure hibernate to print out all the SQL commands that it
             is executing -->
-            <property name="hibernate.show_sql" value="true"/>
+<!--            <property name="hibernate.show_sql" value="true"/>-->
             <!-- drop-and-create tells hibernate to create database tables
             based on the @Entity classes -->
             <!-- the tables are created at application startup. all existing

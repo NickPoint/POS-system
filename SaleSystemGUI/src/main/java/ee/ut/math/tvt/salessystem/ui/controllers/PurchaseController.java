@@ -227,13 +227,20 @@ public class PurchaseController implements Initializable {
     }
 
     @FXML
-    private void deleteButtonClicked() {
+    public void deleteButtonClicked() {
         shoppingCart.deleteFromShoppingCart(selected.getBarcode());
         purchaseTableView.refresh();
     }
 
+    public void editButtonClicked(){
+        DialogPane dp = new DialogPane();
+    }
+
+
+
+
     /**
-     * Sets whether or not the product component is enabled.
+     * Sets whether the product component is enabled.
      */
     private void disableProductField(boolean disable) {
         this.addItemButton.setDisable(disable);
