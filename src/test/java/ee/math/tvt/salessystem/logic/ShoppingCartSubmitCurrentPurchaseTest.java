@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,6 @@ public class ShoppingCartSubmitCurrentPurchaseTest {
     private static boolean invokedFirst;
     private static boolean invokedSecond;
     private static int counter = 0;
-    private static boolean called = false;
 
     @Before
     public void setUp() {
@@ -60,18 +60,28 @@ public class ShoppingCartSubmitCurrentPurchaseTest {
             invokedSecond = invokedFirst;
             super.commitTransaction();
         }
-
-        @Override
-        public void savePurchase(Purchase purchase) {
-            called = true;
-            super.savePurchase(purchase);
-        }
     }
 
     //  check that
     //submitting the current purchase decreases the quantity of all StockItems
     @Test
     public void testSubmittingCurrentPurchaseDecreasesStockItemQuantity() {
+        int initialQuantity = 3;
+        StockItem stockItem1 = new StockItem(1L, "Test1", 1.0, initialQuantity);
+        StockItem stockItem2 = new StockItem(2L, "Test2", 1.0, initialQuantity);
+        warehouse.addNewItem(stockItem1);
+        warehouse.addNewItem(stockItem2);
+        int quantityInShoppingCart = 1;
+        SoldItem soldItem1 = new SoldItem(stockItem1, quantityInShoppingCart);
+        SoldItem soldItem2 = new SoldItem(stockItem2, quantityInShoppingCart);
+        soldItem1.setId(1L);
+        soldItem1.setId(2L);
+        shoppingCart.addItem(soldItem1);
+        shoppingCart.addItem(soldItem2);
+        shoppingCart.submitCurrentPurchase();
+        int expectedQuantity = initialQuantity - quantityInShoppingCart;
+        assertEquals(expectedQuantity, dao.findStockItem(1L).getQuantity());
+        assertEquals(expectedQuantity, dao.findStockItem(2L).getQuantity());
     }
 
     //Check that submitting the current purchase decreases the quantity of all StockItems submitting the current purchase calls beginTransaction and endTransaction, exactly once and in that order
@@ -111,22 +121,40 @@ public class ShoppingCartSubmitCurrentPurchaseTest {
         items.forEach(item -> assertTrue(boughtItems.contains(item)));
     }
 
-    //    check that  the timestamp on the created HistoryItem is set correctly (for example has only a small  difference to the current time)
+    //Check that  the timestamp on the created HistoryItem is set correctly (for example has only a small  difference to the current time)
 
     @Test
     public void testSubmittingCurrentOrderSavesCorrectTime() {
+        StockItem stockItem = new StockItem(1l, "Test", 1.0, 1);
+        warehouse.addNewItem(stockItem);
+        SoldItem soldItem = new SoldItem(stockItem, 1);
+        soldItem.setId(1L);
+        shoppingCart.addItem(soldItem);
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+        shoppingCart.submitCurrentPurchase();
+        Purchase purchase;
+        assertNotNull(purchase = dao.getPurchases().get(0));
+        LocalDate localDatePurchase = purchase.getDate();
+        LocalTime localTimePurchase = purchase.getTime();
+//        assertEquals(localDatePurchase.getYear(), currentDate.getYear());
+//        assertEquals(localDatePurchase.getMonthValue(), currentDate.getMonthValue());
+//        assertEquals(localDatePurchase.getDayOfMonth(), currentDate.getDayOfMonth());
+//
+//        assertEquals(localTimePurchase.getHour(), currentDate.getYear());
+//        assertEquals(localTimePurchase.getMonthValue(), currentDate.getMonthValue());
+//        assertEquals(localTimePurchase.getDayOfMonth(), currentDate.getDayOfMonth());
     }
-    //    check that canceling an order(with some items) and
-    //    then submitting a new order (with some different items) only saves the items
-    //    from the new order (with canceled items are discarded)
+
+    //Check that canceling an order(with some items) and then submitting a new order (with some different items) only saves the items from the new order (with canceled items are discarded)
 
     @Test
     public void testCancellingOrder() {
     }
 
-    //    check that after canceling an order the quantities of the related StockItems are not changed
+    //Check that after canceling an order the quantities of the related StockItems are not changed
     @Test
-    public void testCancellingOrderQuanititesUnchanged() {
+    public void testCancellingOrderQuantitiesUnchanged() {
     }
 
 

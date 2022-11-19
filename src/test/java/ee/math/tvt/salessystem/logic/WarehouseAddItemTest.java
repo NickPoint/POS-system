@@ -25,7 +25,6 @@ public class WarehouseAddItemTest {
         dao.findStockItems().clear();
     }
 
-    //TODO: refactor InMemorySSDAO to be mock DB when real DB connection is added after LAB 5
     class MockDAO extends InMemorySalesSystemDAO {
         /**
          * Only legit variant goes through, so if commit and begin transactions are invoked two times, it works
