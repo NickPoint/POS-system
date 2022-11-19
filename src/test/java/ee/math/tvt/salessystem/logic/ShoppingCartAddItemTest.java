@@ -77,8 +77,14 @@ public class ShoppingCartAddItemTest {
     }
 
 
-    //Check that an exception is thrown if the sum of the quantity of the added item and the quantiquantity already in the shopping cart is larger than the quantity in the warehouse
+    //Check that an exception is thrown if the sum of the quantity of the added item and the quantity already in the shopping cart is larger than the quantity in the warehouse
     @Test
     public void testAddingItemWithQuantitySumTooLarge() {
+        StockItem stockItem = new StockItem(1L, "Test", 1.0, 3);
+        warehouse.addNewItem(stockItem);
+        SoldItem soldItem = new SoldItem(stockItem, 1);
+        shoppingCart.addItem(soldItem);
+        SoldItem soldItem1 = new SoldItem(stockItem, 3);
+        assertThrows(SalesSystemException.class, () -> shoppingCart.addItem(soldItem1));
     }
 }
