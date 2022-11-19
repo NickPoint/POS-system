@@ -46,7 +46,7 @@ e.g. PurchaseController::submitPurchaseButtonClicked, Logger::debug, Logger::inf
 [Solution](https://bitbucket.org/ZmishenkoxValerijxAlbertovich/lg9-man/commits/tag/homework-4)
 
 ## Homework 5:
-<Links to the solution>
+[Solution](https://bitbucket.org/ZmishenkoxValerijxAlbertovich/lg9-man/commits/tag/homework-5)
 
 ## Homework 6:
 <Links to the solution>
