@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+
 //TODO: Investigate additional test suites we may need
 public class WarehouseAddItemTest {
     private InMemorySalesSystemDAO dao;
@@ -19,7 +20,7 @@ public class WarehouseAddItemTest {
     private static boolean called = false;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         dao = new MockDAO();
         warehouse = new Warehouse(dao);
         dao.findStockItems().clear();
@@ -65,7 +66,7 @@ public class WarehouseAddItemTest {
         counter = 0;
         invokedFirst = invokedSecond = false;
         Long id = 1L;
-        warehouse.addNewItem(new StockItem(id, "Placeholder", 2, 5));
+        warehouse.addNewItem(new StockItem(id, "Test", 2, 5));
         assertTrue(counter == 2 && invokedFirst && invokedSecond);
         invokedFirst = invokedSecond = false;
         counter = 0;
@@ -73,11 +74,11 @@ public class WarehouseAddItemTest {
         assertTrue(counter == 2 && invokedFirst && invokedSecond);
     }
 
-    // - check that a new item is saved through the DAO
+    // Check that a new item is saved through the DAO
 
     @Test
     public void testAddingNewItem() {
-        StockItem stockItem = new StockItem(1L, "Coca-Cola", 20.5, 3);
+        StockItem stockItem = new StockItem(1L, "Test", 20.5, 3);
         warehouse.addNewItem(stockItem);
         StockItem testStockItem;
         Assert.assertNotNull(testStockItem = dao.findStockItem(stockItem.getBarCode()));
@@ -87,11 +88,11 @@ public class WarehouseAddItemTest {
         Assert.assertEquals(testStockItem.getQuantity(), stockItem.getQuantity());
     }
 
-    // - check that adding a new item increases the quantity and
+    // Check that adding a new item increases the quantity and
     // the saveStockItem method of the DAO is not called
     @Test
     public void testAddingExistingItem() {
-        StockItem stockItem1 = new StockItem(30l, "SI", 1.0, 1);
+        StockItem stockItem1 = new StockItem(1L, "Test", 1.0, 1);
         warehouse.addNewItem(stockItem1);
         called = false;
         int expected = dao.findStockItem(stockItem1.getBarCode()).getQuantity() + 1;
@@ -100,12 +101,10 @@ public class WarehouseAddItemTest {
         assertFalse("Method was called", called);
     }
 
-    //check that adding an item with negative quantity results in an exception
+    //Check that adding an item with negative quantity results in an exception
     @Test
     public void testAddingItemWithNegativeQuantity() {
-        StockItem stockItem = new StockItem(30l, "SI",
-//                "",
-                1.0, -10);
+        StockItem stockItem = new StockItem(1L, "Test", 1.0, -1);
         assertThrows(SalesSystemException.class, () -> warehouse.addNewItem(stockItem));
     }
 }

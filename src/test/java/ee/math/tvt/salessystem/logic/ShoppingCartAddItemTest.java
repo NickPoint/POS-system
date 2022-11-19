@@ -24,9 +24,10 @@ public class ShoppingCartAddItemTest {
         warehouse = new Warehouse(dao);
         dao.findStockItems().clear();
     }
+
     //Check that shopping cart is initially empty
     @Test
-    public void testShoppingCartInitiallyEmpty(){
+    public void testShoppingCartInitiallyEmpty() {
         assertEquals("Items in the cart: ", 0, shoppingCart.getAll().size());
     }
 
@@ -38,10 +39,11 @@ public class ShoppingCartAddItemTest {
         warehouse.addNewItem(stockItem);
         SoldItem soldItem = new SoldItem(stockItem, 1);
         shoppingCart.addItem(soldItem);
-        int expected = shoppingCart.getAll().get(0).getQuantity() + 1;
+        assertEquals("Quantity of the item in the cart ", 1, shoppingCart.getAll().get(0).getQuantity());
         SoldItem soldItem2 = new SoldItem(stockItem, 1);
         shoppingCart.addItem(soldItem2);
-        assertEquals("Items in the cart: ", expected, shoppingCart.getAll().get(0).getQuantity());
+        assertEquals("Number of items in the cart ", 1, shoppingCart.getAll().size());
+        assertEquals("Quantity of the item in the cart ", 2, shoppingCart.getAll().get(0).getQuantity());
     }
 
     //Check that the new item is added to the shopping cart
@@ -63,7 +65,7 @@ public class ShoppingCartAddItemTest {
     public void testAddingItemWithNegativeQuantity() {
         StockItem stockItem = new StockItem(1L, "Test", 1.0, 1);
         warehouse.addNewItem(stockItem);
-        SoldItem soldItem = new SoldItem(stockItem, -10);
+        SoldItem soldItem = new SoldItem(stockItem, -1);
         assertThrows(SalesSystemException.class, () -> shoppingCart.addItem(soldItem));
     }
 
