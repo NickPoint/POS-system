@@ -34,7 +34,14 @@ public class ShoppingCartAddItemTest {
     //Check that adding an existing item increases the quantity
     @Test
     public void testAddingExistingItem() {
-
+        StockItem stockItem = new StockItem(1L, "Test", 1.0, 5);
+        warehouse.addNewItem(stockItem);
+        SoldItem soldItem = new SoldItem(stockItem, 1);
+        shoppingCart.addItem(soldItem);
+        int expected = shoppingCart.getAll().get(0).getQuantity() + 1;
+        SoldItem soldItem2 = new SoldItem(stockItem, 1);
+        shoppingCart.addItem(soldItem2);
+        assertEquals("Items in the cart: ", expected, shoppingCart.getAll().get(0).getQuantity());
     }
 
     //Check that the new item is added to the shopping cart
