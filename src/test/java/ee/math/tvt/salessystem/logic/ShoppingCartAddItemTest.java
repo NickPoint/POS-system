@@ -1,8 +1,28 @@
 package ee.math.tvt.salessystem.logic;
 
+import ee.ut.math.tvt.salessystem.SalesSystemException;
+import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
+import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
+import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
+import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
+import ee.ut.math.tvt.salessystem.logic.ShoppingCart;
+import ee.ut.math.tvt.salessystem.logic.Warehouse;
+import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertThrows;
+
 public class ShoppingCartAddItemTest {
+    private ShoppingCart shoppingCart;
+    private Warehouse warehouse;
+    private InMemorySalesSystemDAO dao;
+    @Before
+    public void setUp(){
+        dao = new InMemorySalesSystemDAO();
+        shoppingCart = new ShoppingCart(dao);
+        warehouse = new Warehouse(dao);
+        dao.findStockItems().clear();
+    }
 
     //    check that
 //    adding an
@@ -26,18 +46,13 @@ public class ShoppingCartAddItemTest {
     }
 
 
-    //    check that
-//    an exception
-//    is thrown if
-//    trying to
-//    add an
-//    item with
-//    a negative
-//    quantity
-    @Test
+    //Check that an exception is thrown if trying to add an item with a negative quantity
+   @Test
     public void testAddingItemWithNegativeQuantity() {
+        StockItem stockItem = new StockItem(1L, "Test", 1.0, 1);
+        SoldItem soldItem = new SoldItem(stockItem, -10);
+        assertThrows(SalesSystemException.class, () -> shoppingCart.addItem(soldItem));
     }
-
     //    check that
 //    an exception
 //    is thrown if
@@ -66,4 +81,8 @@ public class ShoppingCartAddItemTest {
     @Test
     public void testAddingItemWithQuantitySumTooLarge() {
     }
+
+
+
+
 }

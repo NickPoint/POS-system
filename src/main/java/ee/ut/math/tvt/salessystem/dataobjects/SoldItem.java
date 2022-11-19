@@ -35,7 +35,6 @@ public class SoldItem {
 
     public SoldItem(StockItem stockItem, int quantity) {
         this.barcode = stockItem.getBarCode();
-//        this.stockItem = stockItem;
         this.name = stockItem.getName();
         this.price = stockItem.getPrice();
         this.quantity = quantity;
@@ -100,6 +99,18 @@ public class SoldItem {
 
     public void setPurchase(Purchase purchase) {
         this.purchase = purchase;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SoldItem soldItem = (SoldItem) o;
+        return getId() == soldItem.getId() &&
+                getBarcode() == soldItem.getBarcode() &&
+                getQuantity() == soldItem.getQuantity() &&
+                Double.compare(soldItem.getPrice(), getPrice()) == 0 &&
+                getName().equals(soldItem.getName());
     }
 
     @Override
