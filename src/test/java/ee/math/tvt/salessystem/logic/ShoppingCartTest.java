@@ -10,8 +10,12 @@ import ee.ut.math.tvt.salessystem.logic.Warehouse;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class ShoppingCartTest {
 
@@ -66,7 +70,7 @@ public class ShoppingCartTest {
     }
     @Test
     public void testAddingItemWithNegativeQuantity() {
-        StockItem stockItem = new StockItem(30l, "Test",
+        StockItem stockItem = new StockItem(30l, "Test1",
 //                "",
                 1.0, 1);
         SoldItem soldItem = new SoldItem(stockItem, -10);
@@ -76,7 +80,7 @@ public class ShoppingCartTest {
     public void testSubmittingCurrentPurchaseBeginsAndCommitsTransaction(){
         counter = 0;
         invokedFirst = invokedSecond = false;
-        StockItem stockItem = new StockItem(30l, "Test",
+        StockItem stockItem = new StockItem(1l, "Test2",
 //                "",
                 1.0, 1);
         warehouse.addNewItem(stockItem);
@@ -86,5 +90,21 @@ public class ShoppingCartTest {
         shoppingCart.addItem(soldItem);
         shoppingCart.submitCurrentPurchase();
         assertTrue(counter == 2 && invokedFirst && invokedSecond);
+    }
+
+    @Test
+    public void testSubmittingCurrentOrderCreatesHistoryItem(){
+        dao.getPurchases().clear();
+        StockItem stockItem = new StockItem(2l, "Test3",
+//                "",
+                1.0, 1);
+        warehouse.addNewItem(stockItem);
+        SoldItem soldItem = new SoldItem(stockItem, 1);
+        List<SoldItem> items = new ArrayList<>();
+        items.add(soldItem);
+        shoppingCart.addItem(soldItem);
+        Purchase purchase = new Purchase(items, LocalTime.now(), LocalDate.now());
+        shoppingCart.submitCurrentPurchase();
+        assertEquals(1, dao.getPurchases().size());
     }
 }
