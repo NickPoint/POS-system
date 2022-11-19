@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 //TODO: Investigate additional test suites we may need
-public class WarehouseTest {
+public class WarehouseAddItemTest {
     private InMemorySalesSystemDAO dao;
     private Warehouse warehouse;
     private static boolean invokedFirst;
