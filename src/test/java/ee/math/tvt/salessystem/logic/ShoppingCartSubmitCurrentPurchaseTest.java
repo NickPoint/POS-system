@@ -155,6 +155,12 @@ public class ShoppingCartSubmitCurrentPurchaseTest {
     //Check that after canceling an order the quantities of the related StockItems are not changed
     @Test
     public void testCancellingOrderQuantitiesUnchanged() {
+        StockItem stockItem = new StockItem(1L, "Test", 1.0, 5);
+        warehouse.addNewItem(stockItem);
+        SoldItem soldItem = new SoldItem(stockItem, 1);
+        shoppingCart.addItem(soldItem);
+        shoppingCart.cancelCurrentPurchase();
+        assertEquals(5, stockItem.getQuantity());
     }
 
 
