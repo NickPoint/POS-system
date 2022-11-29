@@ -50,6 +50,7 @@ e.g. PurchaseController::submitPurchaseButtonClicked, Logger::debug, Logger::inf
 
 ## Homework 6:
 <Links to the solution>
+[Functional test planning](https://docs.google.com/spreadsheets/d/1FcMMiEiQTdZ2kkTSh2LVgtSh495R5And/edit#gid=1223732367)
 
 ## Homework 7:
 <Links to the solution>
