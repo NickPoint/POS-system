@@ -2,6 +2,7 @@ package ee.ut.math.tvt.salessystem.ui;
 
 import ee.ut.math.tvt.salessystem.SalesSystemException;
 import ee.ut.math.tvt.salessystem.dao.HibernateSalesSystemDAO;
+import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
@@ -26,13 +27,13 @@ import java.util.stream.Stream;
  * A simple CLI (limited functionality).
  */
 /*
-* TODO:
-* cosmetic changes:
-*  - add -- to all commands
-*  - extend == in CLI welcome window
-* minute changes:
-*  - refactor some logic into separate methods
-*/
+ * TODO:
+ * cosmetic changes:
+ *  - add -- to all commands
+ *  - extend == in CLI welcome window
+ * minute changes:
+ *  - refactor some logic into separate methods
+ */
 public class ConsoleUI {
     private static final Logger log = LogManager.getLogger(ConsoleUI.class);
 
@@ -88,7 +89,7 @@ public class ConsoleUI {
     private void showCart() {
         System.out.println("-------------------------");
         for (SoldItem si : cart.getAll()) {
-            System.out.println(si.getName() + " " + si.getPrice() + "Euro (" + si.getQuantity() + " items)");
+            System.out.println(si.getBarcode() + " " + si.getName() + " " + si.getPrice() + "Euro (" + si.getQuantity() + " items)");
         }
         if (cart.getAll().size() == 0) {
             System.out.println("\tNothing");
@@ -117,7 +118,7 @@ public class ConsoleUI {
             } else {
                 System.out.println("no stock item with id " + idx);
             }
-        } catch (SalesSystemException | NoSuchElementException e) {
+        } catch (SalesSystemException | NumberFormatException e) {
             log.error(e.getMessage());
         }
     }

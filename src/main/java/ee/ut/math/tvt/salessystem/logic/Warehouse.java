@@ -56,6 +56,9 @@ public class Warehouse {
         log.debug("Adding a product " + item);
         try {
             dao.beginTransaction();
+            if(item.getBarCode() < 0){
+                throw new ProductValidationException("The barcode of the product cannot be negative!");
+            }
             if (item.getQuantity() < 0) {
                 throw new ProductValidationException("The quantity of the item cannot be negative!");
             }
