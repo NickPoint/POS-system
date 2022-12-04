@@ -56,4 +56,7 @@ e.g. PurchaseController::submitPurchaseButtonClicked, Logger::debug, Logger::inf
 ## Homework 7:
 <Links to the solution>
 
-[comment]: #(We encourage you to use [markdown syntax](https://confluence.atlassian.com/bitbucketserver/markdown-syntax-guide-776639995.html))
+[Non-functional test cases](https://docs.google.com/spreadsheets/d/1FcMMiEiQTdZ2kkTSh2LVgtSh495R5And/edit#gid=1223732367)
+
+[Functional test case report](https://docs.google.com/document/d/17bLxAY-a9qdsHvBOGH6ZvQsVMioAyZQb9bxcjY-4tPs/edit?usp=sharing)
+
