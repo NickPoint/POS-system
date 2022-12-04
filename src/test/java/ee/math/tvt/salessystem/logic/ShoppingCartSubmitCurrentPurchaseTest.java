@@ -120,7 +120,7 @@ public class ShoppingCartSubmitCurrentPurchaseTest {
     //Check that  the timestamp on the created HistoryItem is set correctly (for example has only a small  difference to the current time)
     @Test
     public void testSubmittingCurrentOrderSavesCorrectTime() {
-        StockItem stockItem = new StockItem(1l, "Test", 1.0, 1);
+        StockItem stockItem = new StockItem(1L, "Test", 1.0, 1);
         warehouse.addNewItem(stockItem);
         SoldItem soldItem = new SoldItem(stockItem, 1);
         shoppingCart.addItem(soldItem);

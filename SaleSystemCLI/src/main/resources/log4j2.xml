@@ -4,15 +4,8 @@
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
     </Console>
-    <File name="File" fileName="logs/hibernate.log">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-    </File>
   </Appenders>
   <Loggers>
-    <logger name="org.hibernate">
-      <level value="off" />
-      <appender-ref ref="File"/>
-    </logger>
     <Root level="debug">
       <AppenderRef ref="Console"/>
     </Root>

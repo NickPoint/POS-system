@@ -11,7 +11,7 @@ public class Team {
     private String teamLeader;
     private String teamLeaderEmail;
     private String[] teamMembers;
-    private Logger log = LogManager.getLogger(Team.class);
+    private final Logger log = LogManager.getLogger(Team.class);
 
 
     public Team() {

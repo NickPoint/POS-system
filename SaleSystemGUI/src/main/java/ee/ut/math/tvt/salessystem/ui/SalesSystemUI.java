@@ -1,9 +1,7 @@
 package ee.ut.math.tvt.salessystem.ui;
 
-import ee.ut.math.tvt.salessystem.dao.HibernateSalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
-import ee.ut.math.tvt.salessystem.logic.History;
 import ee.ut.math.tvt.salessystem.logic.ShoppingCart;
 import ee.ut.math.tvt.salessystem.logic.Team;
 import ee.ut.math.tvt.salessystem.logic.Warehouse;
@@ -27,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Queue;
 
 /**
  * Graphical user interface of the sales system.
@@ -39,15 +36,17 @@ public class SalesSystemUI extends Application {
     private final SalesSystemDAO dao;
     private final ShoppingCart shoppingCart;
     private final Warehouse warehouse;
-    private final History history;
     private final Team team;
 
     public SalesSystemUI() {
-        dao = new HibernateSalesSystemDAO();
+        dao = new InMemorySalesSystemDAO();
         shoppingCart = new ShoppingCart(dao);
         warehouse = new Warehouse(dao);
-        history = new History(dao);
         team = new Team();
+    }
+
+    public static void main (String [] args) {
+        launch(args);
     }
 
     @Override
@@ -69,7 +68,7 @@ public class SalesSystemUI extends Application {
         Tab historyTab = new Tab();
         historyTab.setText("History");
         historyTab.setClosable(false);
-        historyTab.setContent(loadControls("HistoryTab.fxml", new HistoryController(history)));
+        historyTab.setContent(loadControls("HistoryTab.fxml", new HistoryController(dao)));
         log.info("History Tab is loaded");
 
         Tab teamTab = new Tab();

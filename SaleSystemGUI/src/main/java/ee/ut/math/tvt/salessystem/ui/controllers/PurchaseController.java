@@ -9,7 +9,6 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -231,12 +230,6 @@ public class PurchaseController implements Initializable {
         shoppingCart.deleteFromShoppingCart(selected.getBarcode());
         purchaseTableView.refresh();
     }
-
-    public void editButtonClicked(){
-        DialogPane dp = new DialogPane();
-    }
-
-
 
 
     /**

@@ -1,9 +1,10 @@
 package ee.ut.math.tvt.salessystem.ui.controllers;
 
 import ee.ut.math.tvt.salessystem.SalesSystemException;
+import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
+import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
 import ee.ut.math.tvt.salessystem.dataobjects.SoldItem;
-import ee.ut.math.tvt.salessystem.logic.History;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -12,10 +13,8 @@ import javafx.scene.control.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 
 /**
@@ -26,7 +25,7 @@ public class HistoryController implements Initializable {
 
     private static final Logger log = LogManager.getLogger(HistoryController.class);
 
-    private final History history;
+    SalesSystemDAO dao;
 
     @FXML
     private Button showBetweenDatesButton;
@@ -52,8 +51,8 @@ public class HistoryController implements Initializable {
     @FXML
     private TableColumn<SoldItem, String> itemPrice;
 
-    public HistoryController(History history) {
-        this.history = history;
+    public HistoryController(SalesSystemDAO dao) {
+        this.dao = dao;
     }
 
     @Override
@@ -75,7 +74,7 @@ public class HistoryController implements Initializable {
     @FXML
     public void showLastTenButtonClicked() {
         log.info("Loading last 10 purchases");
-        historyTableView.setItems(FXCollections.observableList(history.getLastTenPurchases()));
+        historyTableView.setItems(FXCollections.observableList(dao.getLastTenPurchases()));
         purchaseDetailsTableView.setItems(null);
         purchaseDetailsTableView.refresh();
     }
@@ -91,7 +90,7 @@ public class HistoryController implements Initializable {
             if (startDate == null && endDate == null) {
                 throw new SalesSystemException("Dates are invalid");
             }
-            historyTableView.setItems(FXCollections.observableList(history.getBetweenDates(startDate, endDate)));
+            historyTableView.setItems(FXCollections.observableList(dao.getBetweenDates(startDate, endDate)));
             purchaseDetailsTableView.setItems(null);
             purchaseDetailsTableView.refresh();
         } catch (SalesSystemException e) {
@@ -107,7 +106,7 @@ public class HistoryController implements Initializable {
     @FXML
     public void showAllButtonClicked() {
         log.info("Loading purchases made in a year");
-        historyTableView.setItems(FXCollections.observableList(history.getLastYear()));
+        historyTableView.setItems(FXCollections.observableList(dao.getLastYear()));
         purchaseDetailsTableView.setItems(null);
         purchaseDetailsTableView.refresh();
     }

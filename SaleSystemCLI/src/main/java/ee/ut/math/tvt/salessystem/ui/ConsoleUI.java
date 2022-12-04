@@ -1,7 +1,6 @@
 package ee.ut.math.tvt.salessystem.ui;
 
 import ee.ut.math.tvt.salessystem.SalesSystemException;
-import ee.ut.math.tvt.salessystem.dao.HibernateSalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.InMemorySalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dao.SalesSystemDAO;
 import ee.ut.math.tvt.salessystem.dataobjects.Purchase;
@@ -16,24 +15,19 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
  * A simple CLI (limited functionality).
  */
-/*
- * TODO:
- * cosmetic changes:
- *  - add -- to all commands
- *  - extend == in CLI welcome window
- * minute changes:
- *  - refactor some logic into separate methods
- */
+
 public class ConsoleUI {
     private static final Logger log = LogManager.getLogger(ConsoleUI.class);
 
@@ -52,7 +46,7 @@ public class ConsoleUI {
 
     public static void main(String[] args) throws Exception {
         log.info("Starting up the sales system CLI");
-        SalesSystemDAO dao = new HibernateSalesSystemDAO();
+        SalesSystemDAO dao = new InMemorySalesSystemDAO();
         ConsoleUI console = new ConsoleUI(dao);
         console.run();
     }
@@ -78,7 +72,7 @@ public class ConsoleUI {
         List<StockItem> stockItems = dao.findStockItems();
         System.out.println("-------------------------");
         for (StockItem si : stockItems) {
-            System.out.println(si.getBarCode() + " " + si.getName() + " " + si.getPrice() + "Euro (" + si.getQuantity() + " items)");
+            System.out.println(si.getBarCode() + " " + si.getName() + " " + si.getPrice() + " Euro (" + si.getQuantity() + " items)");
         }
         if (stockItems.size() == 0) {
             System.out.println("\tNothing");
@@ -89,7 +83,7 @@ public class ConsoleUI {
     private void showCart() {
         System.out.println("-------------------------");
         for (SoldItem si : cart.getAll()) {
-            System.out.println(si.getBarcode() + " " + si.getName() + " " + si.getPrice() + "Euro (" + si.getQuantity() + " items)");
+            System.out.println(si.getBarcode() + " " + si.getName() + " " + si.getPrice() + " Euro (" + si.getQuantity() + " items)");
         }
         if (cart.getAll().size() == 0) {
             System.out.println("\tNothing");
@@ -164,8 +158,6 @@ public class ConsoleUI {
     }
 
     private void showLastTenPurchases() {
-//        this.lastWatchedPurchasesList = dao.getLastTenPurchases();
-        //TODO: Delete, used it for setting up the database
         this.lastWatchedPurchasesList = dao.getLastTenPurchases();
         printPurchaseTable();
     }

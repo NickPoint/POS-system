@@ -6,6 +6,8 @@ import ee.ut.math.tvt.salessystem.dataobjects.StockItem;
 import ee.ut.math.tvt.salessystem.logic.Warehouse;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -15,7 +17,9 @@ import org.apache.logging.log4j.Logger;
 
 import javax.persistence.RollbackException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -45,7 +49,7 @@ public class StockController implements Initializable {
     private TableView<StockItem> warehouseTableView;
     @FXML
     private Button addItemButton;
-//    @FXML
+    //    @FXML
 //    private ComboBox dropDown;
     @FXML
     private TextField barCodeField;
@@ -56,14 +60,9 @@ public class StockController implements Initializable {
     @FXML
     private TextField priceField;
 
-    @FXML
-    private Button editItemButton;
 
     @FXML
     private Button deleteItemButton;
-
-    @FXML
-    private Button saveNewItemStateButton;
 
     @FXML
     private TableColumn<StockItem, String> itemPrice;
@@ -75,32 +74,10 @@ public class StockController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        editItemButton.setVisible(false);
-        warehouseTableView.setItems(FXCollections.observableList(dao.findStockItems()));
+        warehouseTableView.setItems(FXCollections.observableList(new ArrayList<>(dao.findStockItems())));
+
         itemPrice.setCellValueFactory(p -> new ReadOnlyObjectWrapper(String.format("%.2f", p.getValue().getPrice())));
         setButtons(false);
-        saveNewItemStateButton.setVisible(false);
-//        dropDown.setEditable(true);
-//        dropDown.valueProperty().addListener(
-//                ($0, $1, selected) -> {
-//                    if (selected instanceof StockItem){
-//                        var item = (StockItem) selected;
-//                        fillInputsByStockItem(item);
-//                    }
-//                    else {
-//                        selected.toString();
-//                    }
-//                    System.out.println(selected);
-//                }
-//        );
-//        dropDown.getItems().addAll(
-//                dao.findStockItems().get(0),
-//                dao.findStockItems().get(1),
-//                dao.findStockItems().get(2)
-//        );
-        //dropDown.setCellFactory(p->new ReadOnlyObjectWrapper<String>(p.toString()));
-
-//        saveNewItemStateButton.setDisable(true);
         barCodeField.focusedProperty().addListener(($0, $1, newPropertyValue) -> {
             if (!newPropertyValue) {
                 isFilledByBarcode = fillInputsBySelectedStockItem();
@@ -114,11 +91,6 @@ public class StockController implements Initializable {
                 setButtons(false);
             }
         });
-//        anchorPane.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-//            if (!editMode) {
-//                warehouseTableView.getSelectionModel().clearSelection();
-//            }
-//        });
     }
 
     /**
@@ -182,6 +154,7 @@ public class StockController implements Initializable {
         if (soldOutIsShown) {
             log.info("Pulling sold-outs");
             log.debug("Warehouse state: " + dao.findStockItems());
+            System.out.println(dao.findStockItems());
             Stream<StockItem> soldOuts = warehouse.getSoldOuts();
             String message = String.join(
                     "\n",
@@ -227,15 +200,9 @@ public class StockController implements Initializable {
         }
     }
 
-    @FXML
-    public void saveNewItemStateButtonClicked() {
-        editMode = true;
-
-    }
-
-
     /**
      * TODO: Candidate for refactoring
+     *
      * @return
      */
     private boolean fillInputsBySelectedStockItem() {
@@ -248,17 +215,6 @@ public class StockController implements Initializable {
         }
         return false;
     }
-
-//    /**
-//     * TODO: Candidate for refactoring
-//     * @return
-//     */
-//    private void fillInputsByStockItem(StockItem stockItem) {
-////        barCodeField.setText(String.valueOf(stockItem.getBarcode()));
-//        nameField.setText(stockItem.getName());
-//        priceField.setText(String.valueOf(stockItem.getPrice()));
-//        quantityField.setText(String.valueOf(stockItem.getQuantity()));
-//    }
 
     /**
      * Search the warehouse for a {@code StockItem} with the bar code entered
@@ -279,8 +235,6 @@ public class StockController implements Initializable {
     private void setButtons(boolean flag) {
         deleteItemButton.setVisible(flag);
         deleteItemButton.setDisable(!flag);
-//        editItemButton.setVisible(flag);
-//        editItemButton.setDisable(!flag);
     }
 
     /**

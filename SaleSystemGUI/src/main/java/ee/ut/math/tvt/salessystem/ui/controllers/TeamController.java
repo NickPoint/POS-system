@@ -22,7 +22,7 @@ public class TeamController implements Initializable {
     @FXML
     private Label teamMembers;
 
-    private Team team;
+    private final Team team;
 
     private final Logger log = LogManager.getLogger(TeamController.class);
 
