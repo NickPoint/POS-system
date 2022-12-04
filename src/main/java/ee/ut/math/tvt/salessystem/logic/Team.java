@@ -16,9 +16,9 @@ public class Team {
 
     public Team() {
         log.info("Loading team information from properties file");
-        String path = "../src/main/resources/application.properties";
+        String path = "application.properties";
         log.debug("File path: " + path);
-        try (InputStream fis = new FileInputStream(path)) {
+        try (InputStream fis = this.getClass().getResourceAsStream(path)) {
             Properties prop = new Properties();
             prop.load(fis);
             log.info("Team information is loaded");
