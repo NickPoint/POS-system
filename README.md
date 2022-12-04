@@ -56,7 +56,7 @@ e.g. PurchaseController::submitPurchaseButtonClicked, Logger::debug, Logger::inf
 ## Homework 7:
 <Links to the solution>
 
-[Non-functional test cases](https://docs.google.com/spreadsheets/d/1FcMMiEiQTdZ2kkTSh2LVgtSh495R5And/edit#gid=1223732367)
+[Non-functional test cases](https://docs.google.com/document/d/1paq5qYZEMGQTCDZG2xpc1CGDPMs1PSHTuGQr_CD3gus/edit?usp=sharing)
 
 [Functional test case report](https://docs.google.com/document/d/17bLxAY-a9qdsHvBOGH6ZvQsVMioAyZQb9bxcjY-4tPs/edit?usp=sharing)
 
