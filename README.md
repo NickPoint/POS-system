@@ -54,7 +54,7 @@ e.g. PurchaseController::submitPurchaseButtonClicked, Logger::debug, Logger::inf
 [Functional test planning](https://docs.google.com/spreadsheets/d/1FcMMiEiQTdZ2kkTSh2LVgtSh495R5And/edit#gid=1223732367)
 
 ## Homework 7:
-<Links to the solution>
+[Solution](https://bitbucket.org/ZmishenkoxValerijxAlbertovich/lg9-man/commits/tag/homework-7)
 
 [Non-functional test cases](https://docs.google.com/document/d/1paq5qYZEMGQTCDZG2xpc1CGDPMs1PSHTuGQr_CD3gus/edit?usp=sharing)
 
