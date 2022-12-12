@@ -60,3 +60,5 @@ e.g. PurchaseController::submitPurchaseButtonClicked, Logger::debug, Logger::inf
 
 [Functional test case report](https://docs.google.com/document/d/17bLxAY-a9qdsHvBOGH6ZvQsVMioAyZQb9bxcjY-4tPs/edit?usp=sharing)
 
+[Non-Functional test case report](https://docs.google.com/document/d/1kuezvhmUv8VxksM7PYXMbc3Hxinb2S95B_aLLCXSr3c/edit?usp=sharing)
+
